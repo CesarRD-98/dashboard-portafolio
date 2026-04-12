@@ -5,7 +5,7 @@ import { AppError } from "@/app/lib/errors/AppError";
 
 export const AuthService = {
     login: async (dto: LoginDto): Promise<boolean> => {
-        const supabase = await getSupabaseBrowser();
+        const supabase = getSupabaseBrowser();
         const { error } = await supabase.auth.signInWithPassword(dto);
 
         if (error) {
@@ -16,7 +16,7 @@ export const AuthService = {
     },
 
     logout: async (): Promise<boolean> => {
-        const supabase = await getSupabaseBrowser();
+        const supabase = getSupabaseBrowser();
         const { error } = await supabase.auth.signOut();
 
         if (error) {
