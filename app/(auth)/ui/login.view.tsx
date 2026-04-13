@@ -1,7 +1,7 @@
 'use client'
 
 import { useToast } from "@/app/components/toast/toast.provider"
-import Spinner from "@/app/components/ui/spinner/Spinner"
+import { Spinner } from "@/app/components/ui/spinner/Spinner"
 import { AppError } from "@/app/lib/errors/AppError"
 import { AuthService } from "@/app/modules/auth/auth.service"
 import { isEmail } from "@/app/utils/isEmail"

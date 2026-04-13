@@ -1,8 +1,9 @@
 import { getSupabaseServer } from "@/app/lib/supabase/server";
-import { Profile } from "./profile.model";
+import { Profile, ProfileDto, profileDtoConfig } from "./profile.model";
 import { AppError } from "@/app/lib/errors/AppError";
 import { mapSupabaseError } from "@/app/lib/errors/ErrorMapper";
 import { toCamelCase, toSnakeCase } from "@/app/utils/caseConverter";
+import { mapFormData } from "@/app/lib/forms/forms.mapper";
 import { uploadFile } from "@/app/lib/supabase/storage/uploadFile";
 
 export const ProfileService = {
@@ -22,53 +23,42 @@ export const ProfileService = {
 
     updateProfile: async (formData: FormData) => {
         const supabase = await getSupabaseServer();
+
         const { data: { user }, error: authError } = await supabase.auth.getUser();
 
         if (authError || !user) { throw new AppError('error', 'Usuario no autenticado'); }
 
-        const avatar = formData.get('avatar') as File | null;
-        const cv = formData.get('cv') as File | null;
+        const mapped = mapFormData<ProfileDto>(formData, profileDtoConfig);
+        const { avatar, cv, year, ...rest } = mapped;
 
-        let avatarUrl: string | null = null;
-        let cvUrl: string | null = null;
+        const updateData: Record<string, unknown> = { ...rest };
 
-        if (avatar) { avatarUrl = await uploadFile(supabase, avatar, user.id, 'image'); }
-        if (cv) { cvUrl = await uploadFile(supabase, cv, user.id, 'file'); }
+        if (year !== undefined) {
+            const parsed = parseInt(year);
+            if (isNaN(parsed)) {
+                throw new AppError('error', 'Formato de año inválido');
+            }
+            updateData.year = parsed;
+        }
 
-        const updateData = mapFormDataToProfile(formData)
+        if (avatar) {
+            const avatarUrl = await uploadFile(supabase, avatar, user.id, 'image');
+            updateData.avatarUrl = avatarUrl;
+        }
 
-        if (avatarUrl) updateData.avatarUrl = avatarUrl;
-        if (cvUrl) updateData.cvUrl = cvUrl;
-        if (Object.keys(updateData).length === 0) { throw new AppError('warning', 'No hay cambios para guardar'); }
+        if (cv) {
+            const cvUrl = await uploadFile(supabase, cv, user.id, 'document');
+            updateData.cvUrl = cvUrl;
+        }
+
+        if (Object.keys(updateData).length === 0) {
+            throw new AppError('warning', 'No hay cambios para guardar');
+        }
 
         const { error } = await supabase.from('profiles').update(toSnakeCase(updateData)).eq('id', user.id);
 
-        if (error) { throw mapSupabaseError(error); }
-    }
-}
-
-
-export function mapFormDataToProfile(formData: FormData): Partial<Profile> {
-    const author = formData.get("author") as string | null;
-    const year = formData.get("year") as string | null;
-    const shortBio = formData.get("shortBio") as string | null;
-    const fullBio = formData.get("fullBio") as string | null;
-    const learningFocus = formData.get("learningFocus") as string | null;
-
-    const updateData: Partial<Profile> = {
-        ...(author && { author }),
-        ...(shortBio && { shortBio }),
-        ...(fullBio && { fullBio }),
-        ...(learningFocus && { learningFocus }),
-    };
-
-    if (year) {
-        const parsedYear = parseInt(year);
-        if (isNaN(parsedYear)) {
-            throw new AppError("error", "Invalid year format");
+        if (error) {
+            throw new AppError('error', error.message);
         }
-        updateData.year = parsedYear;
     }
-
-    return updateData;
 }

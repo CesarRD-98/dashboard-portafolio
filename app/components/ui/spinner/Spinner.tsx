@@ -1,6 +1,6 @@
 import './spinner.css'
 
-export default function Spinner({ size = 24 }: { size?: number }) {
+export function Spinner({ size = 24 }: { size?: number }) {
     return (
         <svg
             className="spinner"

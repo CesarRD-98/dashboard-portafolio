@@ -48,7 +48,7 @@ export function DashboardShell({ children, profile }: Props) {
     };
 
     return (
-        <div className="h-screen overflow-hidden bg-white dark:bg-neutral-950">
+        <div className="bg-white dark:bg-neutral-950">
             {/* Overlay */}
             {isMobile && mobileSidebarOpen && (
                 <div
@@ -58,11 +58,11 @@ export function DashboardShell({ children, profile }: Props) {
             )}
 
             <div
-                className="grid h-full transition-[grid-template-columns] duration-300 ease-in-out"
+                className="h-screen grid transition-[grid-template-columns] duration-300 ease-in-out"
                 style={{ gridTemplateColumns: isMobile ? "minmax(0, 1fr)" : `${desktopSidebarOpen ? SIDEBAR_WIDTH : 0}px minmax(0, 1fr)`, }}
             >
                 {!isMobile && (
-                    <div className="min-w-0 overflow-hidden border-r border-neutral-200 dark:border-neutral-800">
+                    <div className="overflow-y-hidden border-r border-neutral-200 dark:border-neutral-800">
                         <Sidebar
                             mode="desktop"
                             isOpen={desktopSidebarOpen}
@@ -71,14 +71,14 @@ export function DashboardShell({ children, profile }: Props) {
                     </div>
                 )}
 
-                <div className="flex min-w-0 flex-col">
+                <div className="flex flex-col bg-neutral-900/80">
                     <Header
                         profile={profile}
                         onToggleSidebar={toggleSidebar}
                         isSidebarOpen={isSidebarOpen}
                     />
 
-                    <main className="flex-1 overflow-y-auto">
+                    <main className="flex-1 overflow-visible">
                         {children}
                     </main>
                 </div>
