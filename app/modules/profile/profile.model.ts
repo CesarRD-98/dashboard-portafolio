@@ -1,3 +1,5 @@
+import { FieldConfig } from "@/app/lib/forms/forms.mapper";
+
 export interface Profile {
     author: string;
     shortBio: string;
@@ -17,5 +19,14 @@ export interface ProfileDto {
     year?: string;
     avatar?: File;
     cv?: File;
-    updatedAt?: Date;
 }
+
+export const profileDtoConfig: FieldConfig<ProfileDto, keyof ProfileDto>[] = [
+    { key: 'author', type: 'string' },
+    { key: 'shortBio', type: 'string' },
+    { key: 'fullBio', type: 'string' },
+    { key: 'learningFocus', type: 'string' },
+    { key: 'year', type: 'string' },
+    { key: 'avatar', type: 'file' },
+    { key: 'cv', type: 'file' },
+];
