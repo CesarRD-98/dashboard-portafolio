@@ -29,6 +29,9 @@ export default function LoginView() {
             if (success) {
                 router.push('/dashboard')
             }
+
+            setEmail('')
+            setPassword('')
         } catch (error: unknown) {
             if (error instanceof AppError) {
                 showToast({
@@ -98,7 +101,7 @@ export default function LoginView() {
                     {/* BUTTON */}
                     <button
                         type="submit"
-                        disabled={!isValid}
+                        disabled={!isValid || loading}
                         className={`mt-2 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium
                                 transition-all duration-200 ease-out
                                 ${isValid

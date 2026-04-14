@@ -25,7 +25,7 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
 
     const showToast = (toast: Omit<Toast, "id" | "closing">) => {
         const id = crypto.randomUUID();
-        const duration: number = toast.duration ?? 5000;
+        const duration: number = toast.duration ?? 3000;
 
         const newToast: Toast = {
             id,
@@ -46,7 +46,7 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
     const resumeToast = (id: string) => {
         const toast = toasts.find(t => t.id === id);
         if (!toast) return;
-        startTimer(id, toast.duration ?? 5000);
+        startTimer(id, toast.duration ?? 3000);
     };
 
     const closeToast = (id: string) => {

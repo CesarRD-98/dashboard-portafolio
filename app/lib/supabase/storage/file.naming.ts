@@ -2,9 +2,8 @@ import { MIME_TO_EXT } from "./file.config";
 import { AppError } from "@/app/lib/errors/AppError";
 
 export function generateFileName(
-    userId: string,
+    basePath: string,
     file: File,
-    prefix: string
 ): string {
 
     const ext = MIME_TO_EXT[file.type];
@@ -14,10 +13,7 @@ export function generateFileName(
     }
 
     // nombre original
-    const safeName = file.name
-        .replace(/\.[^/.]+$/, '')
-        .replace(/\s+/g, '-')
-        .toLowerCase();
+    const safeName = file.name.split('.').slice(0, -1).join('.').replace(/[^a-zA-Z0-9-_]/g, '_');
 
-    return `${userId}/${prefix}-${crypto.randomUUID()}-${safeName}.${ext}`;
+    return `${basePath}/${safeName}-${crypto.randomUUID()}.${ext}`;
 }

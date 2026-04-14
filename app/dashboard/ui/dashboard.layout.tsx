@@ -71,7 +71,7 @@ export function DashboardShell({ children, profile }: Props) {
                     </div>
                 )}
 
-                <div className="flex flex-col bg-neutral-900/80">
+                <div className="flex flex-col bg-neutral-50 dark:bg-neutral-900/80">
                     <Header
                         profile={profile}
                         onToggleSidebar={toggleSidebar}
