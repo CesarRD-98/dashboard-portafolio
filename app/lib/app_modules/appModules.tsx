@@ -27,8 +27,8 @@ export const AppModules: AppModule[] = [
         label: "Proyectos",
         icon: Folder,
         items: [
-            { label: "Ver proyectos", href: "/dashboard/projects" },
-            { label: "Nuevo", href: "/dashboard/projects/new" },
+            { label: "Ver proyectos", href: "/dashboard/project" },
+            { label: "Nuevo", href: "/dashboard/project/new" },
         ],
     },
     {
@@ -36,8 +36,8 @@ export const AppModules: AppModule[] = [
         label: "Contactos",
         icon: Mail,
         items: [
-            { label: "Ver contactos", href: "/dashboard/contacts" },
-            { label: "Nuevo", href: "/dashboard/contacts/new" },
+            { label: "Ver contactos", href: "/dashboard/contact" },
+            { label: "Nuevo", href: "/dashboard/contact/new" },
         ],
     },
     {
@@ -45,8 +45,8 @@ export const AppModules: AppModule[] = [
         label: "Habilidades",
         icon: Wrench,
         items: [
-            { label: "Ver habilidades", href: "/dashboard/skills" },
-            { label: "Nuevo", href: "/dashboard/skills/new" },
+            { label: "Ver habilidades", href: "/dashboard/skill" },
+            { label: "Nuevo", href: "/dashboard/skill/new" },
         ],
     },
 ];

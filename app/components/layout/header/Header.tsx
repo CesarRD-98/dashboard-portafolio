@@ -17,11 +17,11 @@ export function Header({ profile, onToggleSidebar }: Props) {
 
     const handlerLogOut = async () => {
         const success = await AuthService.logout();
-        if (success) router.push('/');
+        if (success) router.refresh();
     };
 
     return (
-        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-neutral-200 bg-white/80 px-4 backdrop-blur-md dark:border-neutral-800 dark:bg-neutral-900/80 md:px-6">
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-neutral-200 bg-white px-4 backdrop-blur-md dark:border-neutral-800 dark:bg-neutral-900 md:px-6">
             <button
                 onClick={onToggleSidebar}
                 className="rounded-md p-2 hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer"

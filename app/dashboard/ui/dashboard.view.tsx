@@ -15,19 +15,19 @@ const actions = [
     {
         title: "Proyectos",
         description: "Gestiona tus proyectos",
-        href: "/dashboard/projects",
+        href: "/dashboard/project",
         icon: FolderKanban,
     },
     {
         title: "Contactos",
         description: "Administra tus medios de contacto",
-        href: "/dashboard/contacts",
+        href: "/dashboard/contact",
         icon: Mail,
     },
     {
         title: "Habilidades",
         description: "Edita tus skills y tecnologías",
-        href: "/dashboard/skills",
+        href: "/dashboard/skill",
         icon: Wrench,
     },
 ];

@@ -4,7 +4,7 @@ import { AppError } from "@/app/lib/errors/AppError";
 import { mapSupabaseError } from "@/app/lib/errors/ErrorMapper";
 import { toCamelCase, toSnakeCase } from "@/app/utils/caseConverter";
 import { mapFormData } from "@/app/lib/forms/forms.mapper";
-import { uploadFile } from "@/app/lib/supabase/storage/uploadFile";
+import { uploadFileStorage } from "@/app/lib/supabase/storage/uploadFile";
 
 export const ProfileService = {
     getProfile: async (): Promise<Profile> => {
@@ -42,17 +42,17 @@ export const ProfileService = {
         }
 
         if (avatar) {
-            const avatarUrl = await uploadFile(supabase, avatar, user.id, 'image');
+            const avatarUrl = await uploadFileStorage(supabase, avatar, 'avatar', user.id);
             updateData.avatarUrl = avatarUrl;
         }
 
         if (cv) {
-            const cvUrl = await uploadFile(supabase, cv, user.id, 'document');
+            const cvUrl = await uploadFileStorage(supabase, cv, 'cv', user.id);
             updateData.cvUrl = cvUrl;
         }
 
         if (Object.keys(updateData).length === 0) {
-            throw new AppError('warning', 'No hay cambios para guardar');
+            throw new AppError('info', 'No hay cambios para guardar');
         }
 
         const { error } = await supabase.from('profiles').update(toSnakeCase(updateData)).eq('id', user.id);

@@ -20,5 +20,9 @@ export function mapSupabaseError(error: SupabaseError): AppError {
         return new AppError('error', 'No tienes permisos para esta acción');
     }
 
+    if (message.includes('does not exist')) {
+        return new AppError('error', 'La columna consultada no existe en la tabla')
+    }
+
     return new AppError('error', 'Ocurrió un error inesperado');
 }
