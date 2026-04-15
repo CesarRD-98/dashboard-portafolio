@@ -1,33 +1,38 @@
 import { getSupabaseServer } from "@/app/lib/supabase/server";
-import { Project, ProjectDto, projectDtoConfig } from "./projects.model";
+import { Project, ProjectDto } from "./projects.model";
 import { AppError } from "@/app/lib/errors/AppError";
 import { mapSupabaseError } from "@/app/lib/errors/ErrorMapper";
 import { toCamelCase, toSnakeCase } from "@/app/utils/caseConverter";
-import { mapFormData } from "@/app/lib/forms/forms.mapper";
 import { uploadFileStorage } from "@/app/lib/supabase/storage/uploadFile";
 
 export const ProjectsService = {
-    getProjects: async (): Promise<Project[]> => {
+    async getAll(): Promise<Project[]> {
         const supabase = await getSupabaseServer()
+
         const { data: { user }, error: authError } = await supabase.auth.getUser()
 
-        if (authError || !user) { throw new AppError('error', 'Usuario no autenticado'); }
+        if (authError || !user) {
+            throw new AppError('error', 'Usuario no autenticado')
+        }
 
-        const { data, error } = await supabase.from('projects').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
+        const { data, error } = await supabase.from('projects').select('*').eq('user_id', user.id).order('created_at', { ascending: false })
 
-        if (error) { throw mapSupabaseError(error) }
-        if (!data) { throw new AppError("warning", 'Usuario no encontrado'); }
+        if (error) throw mapSupabaseError(error)
+        if (!data) throw new AppError("warning", 'Usuario no encontrado')
 
         return toCamelCase(data) as Project[]
     },
-    createProject: async (formData: FormData): Promise<void> => {
+
+    async create(data: ProjectDto): Promise<void> {
         const supabase = await getSupabaseServer()
+
         const { data: { user }, error: authError } = await supabase.auth.getUser()
 
-        if (authError || !user) { throw new AppError('error', 'Usuario no autenticado'); }
+        if (authError || !user) {
+            throw new AppError('error', 'Usuario no autenticado')
+        }
 
-        const mapped = mapFormData<ProjectDto>(formData, projectDtoConfig)
-        const { img, stack, ...rest } = mapped
+        const { img, stack, ...rest } = data
         const newProject: Record<string, unknown> = { ...rest }
 
         if (img) {
@@ -35,21 +40,14 @@ export const ProjectsService = {
             newProject.imgUrl = imgUrl
         }
 
-        if (stack?.trim() !== '') {
-            const stackProject = stack?.split(',')
-            newProject.stack = stackProject
-        }
-
-        if (Object.keys(newProject).length === 0) {
-            throw new AppError('info', 'No se encontraron datos para crear un proyecto')
+        if (stack?.trim()) {
+            newProject.stack = stack.split(',').map(str => str.trim()).filter(Boolean)
         }
 
         newProject.userId = user.id
 
-        const { error } = await supabase.from('projects').insert([toSnakeCase(newProject)]);
+        const { error } = await supabase.from('projects').insert([toSnakeCase(newProject)])
 
-        if (error) {
-            throw mapSupabaseError(error)
-        }
+        if (error) throw mapSupabaseError(error)
     }
 }

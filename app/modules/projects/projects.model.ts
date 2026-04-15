@@ -26,7 +26,7 @@ export const projectDtoConfig: FieldConfig<ProjectDto, keyof ProjectDto>[] = [
     { key: 'title', type: 'string' },
     { key: 'description', type: 'string' },
     { key: 'img', type: 'file' },
-    { key: 'stack', type: 'file' },
+    { key: 'stack', type: 'string' },
     { key: 'role', type: 'string' },
     { key: 'link', type: 'string' },
 ];

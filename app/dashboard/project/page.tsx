@@ -6,6 +6,6 @@ export const metadata = {
 }
 
 export default async function ProjectPage() {
-    const data = await ProjectsService.getProjects()
+    const data = await ProjectsService.getAll()
     return <ProjectView projects={data} />
 }

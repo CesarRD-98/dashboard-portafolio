@@ -7,6 +7,8 @@ import { InputFile } from "@/app/components/shared/forms/InputFile";
 import { Select } from "@/app/components/shared/forms/Select";
 import { Textarea } from "@/app/components/shared/forms/Textarea";
 import { useToast } from "@/app/components/toast/toast.provider";
+import { Spinner } from "@/app/components/ui/spinner/Spinner";
+import { createProjectAction } from "@/app/modules/projects/actions/projects.action";
 import { FormEvent, useState } from "react";
 
 type FormState = {
@@ -19,6 +21,7 @@ type FormState = {
 
 export function ProjectNewView() {
     const { showToast } = useToast();
+    const [loading, setLoading] = useState<boolean>(false);
 
     const [form, setForm] = useState<FormState>({
         title: "",
@@ -34,9 +37,7 @@ export function ProjectNewView() {
         setForm((prev) => ({ ...prev, [key]: value }));
     };
 
-    const handleSubmit = (e: FormEvent) => {
-        e.preventDefault();
-
+    const buildFormData = () => {
         const formData = new FormData();
 
         Object.entries(form).forEach(([key, value]) => {
@@ -44,14 +45,55 @@ export function ProjectNewView() {
         });
 
         if (image) {
-            formData.append("image", image);
+            formData.append("img", image);
         }
 
-        showToast({
-            title: "Error",
-            message: "Hubo un error al agregar el nuevo proyecto",
-            type: "error",
+        return formData;
+    };
+
+    const handleSubmit = async (e: FormEvent) => {
+        e.preventDefault();
+
+        const formData = buildFormData();
+        if (!formData) return;
+
+        setLoading(true);
+
+        try {
+            const response = await createProjectAction(formData);
+
+            if (!response.success) {
+                showToast({
+                    title: "Error",
+                    message: response.error.message,
+                    type: response.error.type,
+                });
+                return;
+            }
+
+            showToast({
+                title: "Éxito",
+                message: "Proyecto creado correctamente",
+                type: "success",
+            });
+
+            resetForm();
+
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
+    const resetForm = () => {
+        setForm({
+            title: "",
+            description: "",
+            stack: "",
+            role: "",
+            link: "",
         });
+        setImage(null);
     };
 
     return (
@@ -103,9 +145,9 @@ export function ProjectNewView() {
                         onChange={(e) => handleChange("role", e.target.value)}
                     >
                         <option value="">Selecciona un rol</option>
-                        <option value="frontend">Frontend</option>
-                        <option value="backend">Backend</option>
-                        <option value="fullstack">Fullstack</option>
+                        <option value="Desarrollador Frontend">Frontend</option>
+                        <option value="Desarrollador Backend">Backend</option>
+                        <option value="Desarrollador Fullstack">Fullstack</option>
                     </Select>
                 </Field>
 
@@ -131,7 +173,11 @@ export function ProjectNewView() {
                         type="submit"
                         className="px-5 py-2.5 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-500 transition-all shadow-sm hover:shadow-md cursor-pointer"
                     >
-                        Guardar proyecto
+                        {loading ? (
+                            <Spinner />
+                        ) :
+                            "Guardar"
+                        }
                     </button>
                 </div>
 
