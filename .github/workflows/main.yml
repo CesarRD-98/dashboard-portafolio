@@ -19,8 +19,10 @@ jobs:
           node-version: 24
           cache: 'pnpm'
 
-      - name: Setup pnpm
-        run: npm install -g pnpm
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9 --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -49,8 +51,10 @@ jobs:
           node-version: 24
           cache: 'pnpm'
 
-      - name: Setup pnpm
-        run: npm install -g pnpm
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@9 --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
