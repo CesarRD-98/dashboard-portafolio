@@ -1,6 +1,7 @@
 'use client';
 
 import { Section } from "@/app/components/layout/Section";
+import { ButtonSubmit } from "@/app/components/shared/forms/ButtonSubmit";
 import { Field } from "@/app/components/shared/forms/Field";
 import { Input } from "@/app/components/shared/forms/Input";
 import { InputFile } from "@/app/components/shared/forms/InputFile";
@@ -50,6 +51,8 @@ export function ProjectNewView() {
 
         return formData;
     };
+
+    const isValid: boolean = Object.values(form).every((value) => value.trim().length > 0) && image !== null;
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -119,6 +122,7 @@ export function ProjectNewView() {
                         value={form.title}
                         onChange={(e) => handleChange("title", e.target.value)}
                         placeholder="Nombre del proyecto"
+                        required
                     />
                 </Field>
 
@@ -128,6 +132,7 @@ export function ProjectNewView() {
                         value={form.description}
                         onChange={(e) => handleChange("description", e.target.value)}
                         placeholder="Describe brevemente el proyecto"
+                        required
                     />
                 </Field>
 
@@ -136,6 +141,7 @@ export function ProjectNewView() {
                         value={form.stack}
                         onChange={(e) => handleChange("stack", e.target.value)}
                         placeholder="React, Node.js, PostgreSQL..."
+                        required
                     />
                 </Field>
 
@@ -143,6 +149,7 @@ export function ProjectNewView() {
                     <Select
                         value={form.role}
                         onChange={(e) => handleChange("role", e.target.value)}
+                        required
                     >
                         <option value="">Selecciona un rol</option>
                         <option value="Desarrollador Frontend">Frontend</option>
@@ -162,24 +169,14 @@ export function ProjectNewView() {
 
                 <InputFile
                     label="Imagen del proyecto"
+                    file={image}
                     helperText="JPG, PNG o GIF"
                     accept=".jpg,.jpeg,.png,.gif"
-                    onFileSelect={setImage}
+                    onChange={setImage}
                 />
 
                 {/* ACTION */}
-                <div className="flex justify-end pt-4 border-t border-neutral-200 dark:border-neutral-800">
-                    <button
-                        type="submit"
-                        className="px-5 py-2.5 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-500 transition-all shadow-sm hover:shadow-md cursor-pointer"
-                    >
-                        {loading ? (
-                            <Spinner />
-                        ) :
-                            "Guardar"
-                        }
-                    </button>
-                </div>
+                <ButtonSubmit isValid={isValid} loading={loading} text="Guardar nuevo proyecto"/>
 
             </form>
         </Section>

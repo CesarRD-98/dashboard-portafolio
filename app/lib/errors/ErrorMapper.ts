@@ -24,5 +24,9 @@ export function mapSupabaseError(error: SupabaseError): AppError {
         return new AppError('error', 'La columna consultada no existe en la tabla')
     }
 
+    if (message.includes('invalid input syntax')) {
+        return new AppError('error', 'Formato de dato inválido o undefined');
+    }
+
     return new AppError('error', 'Ocurrió un error inesperado');
 }

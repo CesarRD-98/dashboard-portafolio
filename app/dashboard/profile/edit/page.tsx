@@ -5,8 +5,7 @@ export const metadata = {
     title: 'Editar perfil | Perfil'
 }
 
-
 export default async function ProfileEditPage() {
-    const data = await ProfileService.getProfile()
+    const data = await ProfileService.getOne()
     return <ProfileEditView profile={data} />
 }

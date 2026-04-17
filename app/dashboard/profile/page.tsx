@@ -6,7 +6,7 @@ export const metadata = {
 }
 
 export default async function ProfilePage() {
-    const data = await ProfileService.getProfile()
+    const data = await ProfileService.getOne()
 
     return <ProfileView profile={data} />
 }

@@ -7,11 +7,11 @@ import { ProfileService } from "../modules/profile/profile.service";
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
     const supabase = await getSupabaseServer();
 
-    const { data: { session } } = await supabase.auth.getSession();
+    const { data: { user } } = await supabase.auth.getUser()
 
-    if (!session) { redirect("/") }
+    if (!user) { redirect("/") }
 
-    const profile = await ProfileService.getProfile();
+    const profile = await ProfileService.getOne();
 
     return (
         <DashboardShell profile={profile}>

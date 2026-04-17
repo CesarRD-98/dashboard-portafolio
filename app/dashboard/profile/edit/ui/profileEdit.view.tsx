@@ -193,14 +193,16 @@ export function ProfileEditView({ profile }: Props) {
                         label="Avatar"
                         helperText="JPG, PNG o GIF"
                         accept=".jpg,.jpeg,.png,.gif"
-                        onFileSelect={setAvatar}
+                        file={avatar}
+                        onChange={setAvatar}
                     />
 
                     <InputFile
                         label="CV"
                         helperText="PDF o DOCX"
                         accept=".pdf,.doc,.docx"
-                        onFileSelect={setCv}
+                        file={cv}
+                        onChange={setCv}
                     />
                 </div>
 
