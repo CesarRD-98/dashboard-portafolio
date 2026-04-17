@@ -8,7 +8,6 @@ import { InputFile } from "@/app/components/shared/forms/InputFile";
 import { Select } from "@/app/components/shared/forms/Select";
 import { Textarea } from "@/app/components/shared/forms/Textarea";
 import { useToast } from "@/app/components/toast/toast.provider";
-import { Spinner } from "@/app/components/ui/spinner/Spinner";
 import { createProjectAction } from "@/app/modules/projects/actions/projects.action";
 import { FormEvent, useState } from "react";
 
@@ -167,16 +166,17 @@ export function ProjectNewView() {
                     />
                 </Field>
 
-                <InputFile
-                    label="Imagen del proyecto"
-                    file={image}
-                    helperText="JPG, PNG o GIF"
-                    accept=".jpg,.jpeg,.png,.gif"
-                    onChange={setImage}
-                />
+                <Field label="Imagen del proyecto">
+                    <InputFile
+                        file={image}
+                        helperText="JPG, PNG o GIF"
+                        accept=".jpg,.jpeg,.png,.gif"
+                        onChange={setImage}
+                    />
+                </Field>
 
                 {/* ACTION */}
-                <ButtonSubmit isValid={isValid} loading={loading} text="Guardar nuevo proyecto"/>
+                <ButtonSubmit isValid={isValid} loading={loading} text="Guardar nuevo proyecto" />
 
             </form>
         </Section>

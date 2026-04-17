@@ -2,7 +2,6 @@ import { CheckCircle, Upload, Loader2 } from "lucide-react";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 
 interface InputFileProps {
-    label?: string;
     helperText?: string;
     accept?: string;
     file: File | null;
@@ -11,7 +10,6 @@ interface InputFileProps {
 }
 
 export const InputFile = ({
-    label = "",
     helperText = "Documentos, Imágenes",
     accept = "*",
     file,
