@@ -1,44 +1,20 @@
 'use server';
 
 import { ProfileService } from "@/app/modules/profile/profile.service";
-import { AppError } from "@/app/lib/errors/AppError";
 import { revalidatePath } from "next/cache";
+import { safeAction } from "@/app/lib/errors/SafeActions";
+import { mapFormData } from "@/app/lib/forms/forms.mapper";
+import { ProfileDto, profileDtoConfig } from "../profile.model";
+import { AppError } from "@/app/lib/errors/AppError";
 
-type ActionResponse = {
-    success: boolean;
-    error?: {
-        message: string;
-        type: 'error' | 'warning' | 'info';
-    };
-};
+export const updateProfileAction = safeAction(async (formData: FormData) => {
+    const dto = mapFormData<ProfileDto>(formData, profileDtoConfig) as ProfileDto;
 
-export async function updateProfileAction(formData: FormData): Promise<ActionResponse> {
-    try {
-        await ProfileService.updateProfile(formData);
-
-        revalidatePath('/profile');
-        revalidatePath('/profile/edit');
-
-        return { success: true };
-
-    } catch (error: unknown) {
-
-        if (error instanceof AppError) {
-            return {
-                success: false,
-                error: {
-                    message: error.message,
-                    type: error.type
-                }
-            };
-        }
-
-        return {
-            success: false,
-            error: {
-                message: 'Error inesperado',
-                type: 'error'
-            }
-        };
+    if (Object.keys(dto).length === 0) {
+        throw new AppError('info', 'No se encontraron datos para actualizar el perfil');
     }
-}
+
+    await ProfileService.update(dto);
+
+    revalidatePath('/profile');
+})

@@ -1,17 +1,13 @@
-import { getSupabaseServer } from "@/app/lib/supabase/server";
-import { Profile, ProfileDto, profileDtoConfig } from "./profile.model";
+import { Profile, ProfileDto } from "./profile.model";
 import { AppError } from "@/app/lib/errors/AppError";
 import { mapSupabaseError } from "@/app/lib/errors/ErrorMapper";
 import { toCamelCase, toSnakeCase } from "@/app/utils/caseConverter";
-import { mapFormData } from "@/app/lib/forms/forms.mapper";
 import { uploadFileStorage } from "@/app/lib/supabase/storage/uploadFile";
+import { getServerAuthContext } from "../auth/getServer.context";
 
 export const ProfileService = {
-    getProfile: async (): Promise<Profile> => {
-        const supabase = await getSupabaseServer()
-        const { data: { user }, error: AuthError } = await supabase.auth.getUser()
-
-        if (AuthError || !user) { throw new AppError('error', 'Usuario no autenticado'); }
+    getOne: async (): Promise<Profile> => {
+        const { user, supabase } = await getServerAuthContext()
 
         const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
 
@@ -21,23 +17,15 @@ export const ProfileService = {
         return toCamelCase(data) as Profile
     },
 
-    updateProfile: async (formData: FormData) => {
-        const supabase = await getSupabaseServer();
+    update: async (dto: ProfileDto) => {
+        const { user, supabase } = await getServerAuthContext()
 
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
-
-        if (authError || !user) { throw new AppError('error', 'Usuario no autenticado'); }
-
-        const mapped = mapFormData<ProfileDto>(formData, profileDtoConfig);
-        const { avatar, cv, year, ...rest } = mapped;
-
+        const { avatar, cv, year, ...rest } = dto;
         const updateData: Record<string, unknown> = { ...rest };
 
         if (year !== undefined) {
             const parsed = parseInt(year);
-            if (isNaN(parsed)) {
-                throw new AppError('error', 'Formato de año inválido');
-            }
+            if (isNaN(parsed)) { throw new AppError('error', 'Formato de año inválido'); }
             updateData.year = parsed;
         }
 
@@ -49,10 +37,6 @@ export const ProfileService = {
         if (cv) {
             const cvUrl = await uploadFileStorage(supabase, cv, 'cv', user.id);
             updateData.cvUrl = cvUrl;
-        }
-
-        if (Object.keys(updateData).length === 0) {
-            throw new AppError('info', 'No hay cambios para guardar');
         }
 
         const { error } = await supabase.from('profiles').update(toSnakeCase(updateData)).eq('id', user.id);

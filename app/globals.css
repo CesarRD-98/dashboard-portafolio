@@ -5,6 +5,53 @@
   --foreground: #171717;
 }
 
+/* ===== GLOBAL SCROLLBAR ===== */
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(163 163 163) transparent;
+  /* neutral-400 */
+}
+
+/* Chrome, Edge, Safari */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgb(163 163 163);
+  /* neutral-400 */
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(115 115 115);
+  /* neutral-500 */
+}
+
+/* ===== DARK MODE SCROLL ===== */
+
+.dark * {
+  scrollbar-color: rgb(82 82 82) transparent;
+  /* neutral-600 */
+}
+
+.dark *::-webkit-scrollbar-thumb {
+  background-color: rgb(82 82 82);
+}
+
+.dark *::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(115 115 115);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -25,6 +72,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+
 /* ==========
     TOAST
 ==========*/
@@ -41,4 +89,160 @@ body {
 
 .animate-toast-progress {
   animation: toast-progress linear forwards;
+}
+
+
+/* ==========
+    MODAL
+==========*/
+
+/* OVERLAY */
+.overlay {
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+}
+
+.overlay[data-state="enter"] {
+  animation-name: overlay-in;
+}
+
+.overlay[data-state="exit"] {
+  animation-name: overlay-out;
+}
+
+/* MODAL */
+.modal {
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+}
+
+.modal[data-state="enter"] {
+  animation-name: modal-in;
+}
+
+.modal[data-state="exit"] {
+  animation-name: modal-out;
+}
+
+/* KEYFRAMES */
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes modal-out {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(8px) scale(0.95);
+  }
+}
+
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes overlay-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+
+/* ==========
+    SIDEBAR
+==========*/
+
+.dashboard-shell {
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.dashboard-sidebar-column {
+  width: 280px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  transition: width 0.3s ease;
+}
+
+.dashboard-sidebar-column[data-state="closed"] {
+  width: 0;
+}
+
+.dashboard-sidebar-panel {
+  width: 280px;
+  height: 100%;
+  transform: translateX(0);
+  transition: transform 0.3s ease;
+}
+
+.dashboard-sidebar-column[data-state="closed"] .dashboard-sidebar-panel {
+  transform: translateX(-100%);
+}
+
+.dashboard-sidebar-overlay {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.dashboard-sidebar-overlay[data-state="open"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.dashboard-sidebar-mobile-layer {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.dashboard-sidebar-mobile-layer[data-state="open"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.dashboard-sidebar-mobile-panel {
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+
+.dashboard-sidebar-mobile-layer[data-state="open"] .dashboard-sidebar-mobile-panel {
+  transform: translateX(0);
+}
+
+.dashboard-scroll-area {
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.dashboard-accordion {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.25s ease;
+}
+
+.dashboard-accordion[data-state="open"] {
+  max-height: 1000px;
 }

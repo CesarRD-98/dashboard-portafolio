@@ -189,19 +189,23 @@ export function ProfileEditView({ profile }: Props) {
 
                 {/* FILES */}
                 <div className="grid gap-6 md:grid-cols-2">
-                    <InputFile
-                        label="Avatar"
-                        helperText="JPG, PNG o GIF"
-                        accept=".jpg,.jpeg,.png,.gif"
-                        onFileSelect={setAvatar}
-                    />
+                    <Field label="Avatar o Imagen de perfil">
+                        <InputFile
+                            helperText="JPG, PNG o GIF"
+                            accept=".jpg,.jpeg,.png,.gif"
+                            file={avatar}
+                            onChange={setAvatar}
+                        />
+                    </Field>
 
-                    <InputFile
-                        label="CV"
-                        helperText="PDF o DOCX"
-                        accept=".pdf,.doc,.docx"
-                        onFileSelect={setCv}
-                    />
+                    <Field label="CV">
+                        <InputFile
+                            helperText="PDF o DOCX"
+                            accept=".pdf,.doc,.docx"
+                            file={cv}
+                            onChange={setCv}
+                        />
+                    </Field>
                 </div>
 
                 {/* ACTIONS */}

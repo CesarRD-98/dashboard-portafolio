@@ -24,5 +24,5 @@ export const AuthService = {
         }
 
         return true
-    },
+    }
 };
