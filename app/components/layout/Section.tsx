@@ -1,18 +1,30 @@
 import { ReactNode } from "react"
-import { Container } from "./Container";
 
 type Props = {
-    children: ReactNode;
-    id: string;
-    className?: string
+    title?: string
+    description?: string
+    children: ReactNode
 }
 
-export function Section({ children, id, className = "" }: Props) {
+export function Section({ title, description, children }: Props) {
     return (
-        <section id={id} className={`w-full px-4 py-6 md:px-6 ${className}`}>
-            <Container>
-                {children}
-            </Container>
+        <section className="space-y-6">
+            {(title || description) && (
+                <div>
+                    {title && (
+                        <h1 className="text-lg font-semibold text-neutral-900 dark:text-white">
+                            {title}
+                        </h1>
+                    )}
+                    {description && (
+                        <p className="text-sm text-neutral-600 dark:text-neutral-400 mt-1">
+                            {description}
+                        </p>
+                    )}
+                </div>
+            )}
+
+            {children}
         </section>
     )
 }

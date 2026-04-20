@@ -7,10 +7,9 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ProjectCard } from "./components/ProjectCard"
 import { Plus } from "lucide-react"
-import { useState } from "react"
 import { deleteProjectAction } from "@/app/modules/projects/actions/projects.action"
 import { useToast } from "@/app/components/toast/toast.provider"
-import { ConfirmModal } from "@/app/components/shared/modals/ConfirModal"
+import { useConfirm } from "@/app/components/shared/modals/confirm.provider"
 
 type Props = {
     projects: Project[]
@@ -19,44 +18,37 @@ type Props = {
 export function ProjectView({ projects }: Props) {
     const router = useRouter()
     const { showToast } = useToast()
-
-    const [selectedProject, setSelectedProject] = useState<Project | null>(null)
-    const [openModal, setOpenModal] = useState(false)
-    const [loadingDelete, setLoadingDelete] = useState(false)
+    const confirm = useConfirm()
 
     const handleDelete = (project: Project) => {
-        setSelectedProject(project)
-        setOpenModal(true)
-    }
+        confirm({
+            title: "Eliminar proyecto",
+            description: `¿Seguro que quieres eliminar "${project.title}"? Esta acción no se puede deshacer.`,
+            confirmText: "Eliminar",
+            variant: "danger",
+            action: async () => {
+                try {
+                    await deleteProjectAction(project.id)
 
-    const handleConfirmDelete = async () => {
-        if (!selectedProject) return
+                    showToast({
+                        title: "Proyecto eliminado",
+                        message: "Se eliminó correctamente",
+                        type: "success"
+                    })
 
-        try {
-            setLoadingDelete(true)
-            await deleteProjectAction(selectedProject.id)
-
-            showToast({
-                title: "Proyecto eliminado",
-                message: "Se eliminó correctamente",
-                type: "success"
-            })
-
-            setSelectedProject(null)
-
-        } catch {
-            showToast({
-                title: "Error",
-                message: "No se pudo eliminar",
-                type: "error"
-            })
-        } finally {
-            setLoadingDelete(false)
-        }
+                } catch {
+                    showToast({
+                        title: "Error",
+                        message: "No se pudo eliminar",
+                        type: "error"
+                    })
+                }
+            }
+        })
     }
 
     return (
-        <Section id="projects-home">
+        <Section title="Mis Proyectos" description="Gestiona tus proyectos">
             {!projects.length ? (
                 <StatusMessage
                     title="No hay proyectos disponibles"
@@ -72,16 +64,7 @@ export function ProjectView({ projects }: Props) {
             ) : (
                 <>
                     {/* HEADER */}
-                    <div className="flex items-center justify-between flex-wrap gap-3">
-                        <div className="space-y-1">
-                            <h1 className="text-2xl font-semibold text-neutral-900 dark:text-white">
-                                Proyectos
-                            </h1>
-                            <p className="text-base text-neutral-600 dark:text-neutral-400">
-                                Gestiona tus proyectos publicados
-                            </p>
-                        </div>
-
+                    <div className="flex justify-end">
                         <Link
                             href="/dashboard/project/new"
                             className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold hover:bg-neutral-200/75 dark:hover:bg-neutral-800 
@@ -104,17 +87,6 @@ export function ProjectView({ projects }: Props) {
                     </div>
                 </>
             )}
-
-            <ConfirmModal
-                open={openModal}
-                title="Eliminar proyecto"
-                description={`¿Seguro que quieres eliminar "${selectedProject?.title}"? Esta acción no se puede deshacer.`}
-                confirmText="Eliminar"
-                variant="danger"
-                loading={loadingDelete}
-                onClose={() => setOpenModal(false)}
-                onConfirm={handleConfirmDelete}
-            />
         </Section>
     )
 }

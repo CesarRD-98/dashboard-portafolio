@@ -11,12 +11,12 @@ export async function getSupabaseServer() {
             cookies: {
                 getAll: () => cookieStore.getAll(),
                 setAll: (cookies) => {
-                    try {
-                        cookies.forEach(({ name, value, options }) => {
-                            cookieStore.set({ name, value, ...options });
-                        });
-                    } catch { }
+                    cookies.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
                 },
+            },
+            auth: {
+                persistSession: false,
+                autoRefreshToken: false,
             },
         }
     );

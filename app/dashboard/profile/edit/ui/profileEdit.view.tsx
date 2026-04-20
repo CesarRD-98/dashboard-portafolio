@@ -114,16 +114,10 @@ export function ProfileEditView({ profile }: Props) {
     }, [profile])
 
     return (
-        <Section id="profile-edit">
-            {/* HEADER */}
-            <div className="max-w-2xl space-y-1">
-                <h1 className="text-3xl font-semibold text-neutral-900 dark:text-white">
-                    Editar Perfil
-                </h1>
-                <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                    Actualiza la información pública de tu portafolio
-                </p>
-            </div>
+        <Section
+            title="Editar perfil"
+            description="Actualiza la información pública de tu portafolio"
+        >
 
             {/* FORM CARD */}
             <form

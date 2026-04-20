@@ -1,7 +1,8 @@
 'use client'
 
-import { ReactNode, useCallback, useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { createPortal } from "react-dom"
+import clsx from "clsx"
 
 type Variant = "default" | "danger" | "success" | "warning"
 
@@ -11,11 +12,10 @@ type Props = {
     description?: string
     confirmText?: string
     cancelText?: string
-    onConfirm: () => Promise<void> | void
+    onConfirm: () => void
     onClose: () => void
-    loading?: boolean
     variant?: Variant
-    children?: ReactNode
+    loading?: boolean
 }
 
 const variantStyles: Record<Variant, string> = {
@@ -33,69 +33,71 @@ export function ConfirmModal({
     cancelText = "Cancelar",
     onConfirm,
     onClose,
-    loading = false,
     variant = "default",
-    children
+    loading = false,
 }: Props) {
 
-    const [isPresent, setIsPresent] = useState(open)
-    const [state, setState] = useState<"enter" | "exit">("enter")
+    const [visible, setVisible] = useState(false)
 
     
-    if (open && !isPresent) {
-        setIsPresent(true)
-        setState("enter")
-    }
-
     const handleClose = useCallback(() => {
         if (loading) return
-        setState("exit")
-    }, [loading])
+        setVisible(false)
+        setTimeout(onClose, 200)
+    }, [loading, onClose])
 
-    
-    const handleConfirm = useCallback(async () => {
-        await onConfirm()
-        setState("exit")
+    const handleConfirm = useCallback(() => {
+        setVisible(false)
+        setTimeout(onConfirm, 200)
     }, [onConfirm])
 
-    const handleAnimationEnd = useCallback(() => {
-        if (state === "exit") {
-            setIsPresent(false)
-            onClose()
-        }
-    }, [state, onClose])
-
+    
     useEffect(() => {
-        if (!isPresent) return
+        if (!open) return
 
-        const handleEsc = (e: KeyboardEvent) => {
-            if (e.key === "Escape") handleClose()
+        const id = requestAnimationFrame(() => setVisible(true))
+        return () => cancelAnimationFrame(id)
+    }, [open])
+
+    // ESC
+    useEffect(() => {
+        if (!open) return
+
+        const onEsc = (e: KeyboardEvent) => {
+            if (e.key === "Escape" && !loading) {
+                handleClose()
+            }
         }
 
-        window.addEventListener("keydown", handleEsc)
-        return () => window.removeEventListener("keydown", handleEsc)
-    }, [isPresent, handleClose])
+        window.addEventListener("keydown", onEsc)
+        return () => window.removeEventListener("keydown", onEsc)
+    }, [open, loading, handleClose])
 
-    if (!isPresent) return null
+    if (!open && !visible) return null
 
     return createPortal(
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
 
-            {/* OVERLAY */}
+            {/* Overlay */}
             <div
                 onClick={handleClose}
-                data-state={state}
-                className="overlay absolute inset-0 bg-black/40 backdrop-blur-sm"
+                className={clsx(
+                    "absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-200",
+                    visible ? "opacity-100" : "opacity-0"
+                )}
             />
 
-            {/* MODAL */}
+            {/* Modal */}
             <div
-                data-state={state}
-                onAnimationEnd={handleAnimationEnd}
-                className="modal relative w-full max-w-md mx-4 rounded-xl border border-neutral-200 dark:border-neutral-800 
-                bg-white dark:bg-neutral-900 shadow-xl p-6 flex flex-col gap-4"
+                className={clsx(
+                    "relative w-full max-w-md rounded-xl border border-neutral-200 dark:border-neutral-800",
+                    "bg-white dark:bg-neutral-900 shadow-xl p-6 flex flex-col gap-4",
+                    "transition-all duration-200",
+                    visible
+                        ? "opacity-100 translate-y-0 scale-100"
+                        : "opacity-0 translate-y-4 scale-95"
+                )}
             >
-
                 <h2 className="text-lg font-semibold text-neutral-900 dark:text-white">
                     {title}
                 </h2>
@@ -106,15 +108,12 @@ export function ConfirmModal({
                     </p>
                 )}
 
-                {children}
-
                 <div className="flex justify-end gap-3 pt-4">
-
                     <button
                         onClick={handleClose}
                         disabled={loading}
                         className="px-4 py-2 text-sm rounded-md border border-neutral-200 dark:border-neutral-700 
-                        text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
+            hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
                     >
                         {cancelText}
                     </button>
@@ -122,12 +121,11 @@ export function ConfirmModal({
                     <button
                         onClick={handleConfirm}
                         disabled={loading}
-                        className={`
-                            px-4 py-2 text-sm rounded-md font-medium text-white 
-                            transition flex items-center gap-2 active:scale-95
-                            ${variantStyles[variant]}
-                            ${loading ? "opacity-80 cursor-not-allowed" : ""}
-                        `}
+                        className={clsx(
+                            "px-4 py-2 text-sm rounded-md text-white flex items-center gap-2 transition",
+                            variantStyles[variant],
+                            loading && "opacity-80 cursor-not-allowed"
+                        )}
                     >
                         {loading && (
                             <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -135,7 +133,6 @@ export function ConfirmModal({
 
                         {confirmText}
                     </button>
-
                 </div>
             </div>
         </div>,

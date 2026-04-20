@@ -1,0 +1,38 @@
+import { LucideIcon } from "lucide-react"
+
+type Props = {
+    icon: LucideIcon
+    label: string
+    active?: boolean
+    collapsed: boolean
+    onClick: () => void
+}
+
+export function SidebarItem({
+    icon: Icon,
+    label,
+    active,
+    collapsed,
+    onClick
+}: Props) {
+    return (
+        <button
+            onClick={onClick}
+            className={`
+                flex items-center gap-3 w-full rounded-md px-3 py-2.5 text-sm transition-all
+                ${active
+                    ? "bg-blue-100 text-blue-700 dark:bg-blue-600/70 dark:text-white"
+                    : "text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800"}`}
+        >
+            <span className="flex h-5 w-5 items-center justify-center shrink-0">
+                <Icon size={18} />
+            </span>
+
+            {/* Label */}
+            <span className={`whitespace-nowrap transition-all duration-200 ${collapsed ? "opacity-0 w-0 overflow-hidden" : "opacity-100 w-auto"}`}
+            >
+                {label}
+            </span>
+        </button>
+    )
+}

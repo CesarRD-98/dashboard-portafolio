@@ -4,9 +4,9 @@ import { SupabaseClient, User } from "@supabase/supabase-js";
 
 export async function getServerAuthContext(): Promise<{ user: User, supabase: SupabaseClient }> {
     const supabase = await getSupabaseServer()
-    const { data: { user }, error: AuthError } = await supabase.auth.getUser()
+    const { data: { user }, error } = await supabase.auth.getUser();
 
-    if (AuthError || !user) { throw new AppError('error', 'Usuario no autenticado'); }
+    if (error || !user) { throw new AppError('error', 'Usuario no autenticado'); }
 
     return {
         user,
