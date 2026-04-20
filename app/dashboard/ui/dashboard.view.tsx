@@ -4,7 +4,6 @@ import Link from "next/link";
 import { User, FolderKanban, Mail, Wrench } from "lucide-react";
 import { Section } from "@/app/components/layout/Section";
 
-
 const actions = [
     {
         title: "Perfil",
@@ -34,8 +33,11 @@ const actions = [
 
 export default function DashboardView() {
     return (
-        <Section id="dashboard-home">
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Section
+            title="Dashboard"
+            description="Accede rápidamente a los módulos principales"
+        >
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {actions.map((action) => {
                     const Icon = action.icon;
 
@@ -43,19 +45,21 @@ export default function DashboardView() {
                         <Link
                             key={action.href}
                             href={action.href}
-                            className="group flex flex-col gap-4 p-5 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white/60 dark:bg-neutral-900/60 backdrop-blur-md transition-all duration-200 hover:-translate-y-[2px] hover:shadow-md"
+                            className="group rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
                         >
-                            <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-neutral-100 dark:bg-neutral-800 group-hover:text-blue-600">
-                                <Icon size={20} />
-                            </div>
+                            <div className="flex items-start gap-4">
+                                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-600/20">
+                                    <Icon size={20} />
+                                </div>
 
-                            <div>
-                                <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">
-                                    {action.title}
-                                </h3>
-                                <p className="text-xs text-neutral-600 dark:text-neutral-400">
-                                    {action.description}
-                                </p>
+                                <div>
+                                    <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">
+                                        {action.title}
+                                    </h3>
+                                    <p className="text-xs text-neutral-600 dark:text-neutral-400 mt-1">
+                                        {action.description}
+                                    </p>
+                                </div>
                             </div>
                         </Link>
                     );

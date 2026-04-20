@@ -113,17 +113,10 @@ export function ProjectEditView({ project }: Props) {
     }, [project])
 
     return (
-        <Section id="project-edit">
-
-            {/* HEADER */}
-            <div className="max-w-2xl space-y-1">
-                <h1 className="text-3xl font-semibold text-neutral-900 dark:text-white">
-                    Editar proyecto
-                </h1>
-                <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                    Actualiza la información de tu proyecto
-                </p>
-            </div>
+        <Section
+            title="Editar Proyecto"
+            description="Actualiza información de tu proyecto"
+        >
 
             {/* FORM */}
             <form

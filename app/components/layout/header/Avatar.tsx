@@ -9,12 +9,12 @@ type Props = {
 
 export function Avatar({ profile }: Props) {
     return (
-        <div className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-md border border-neutral-200 bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800">
+        <div className="relative h-9 w-9 overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-100 dark:bg-neutral-800">
             <Image
                 src={profile.avatarUrl}
                 alt="Avatar"
                 fill
-                sizes="50px"
+                sizes="36px"
                 className="object-cover"
                 priority
             />

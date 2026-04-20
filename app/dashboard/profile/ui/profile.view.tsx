@@ -1,5 +1,6 @@
 import { Section } from "@/app/components/layout/Section";
 import { Profile } from "@/app/modules/profile/profile.model";
+import { Edit } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -9,20 +10,24 @@ type Props = {
 
 export function ProfileView({ profile }: Props) {
     return (
-        <Section id="profile-home">
-            {/* HEADER */}
-            <div className="space-y-1 mb-3">
-                <h1 className="text-2xl font-semibold text-neutral-900 dark:text-white">
-                    Perfil
-                </h1>
-                <p className="text-base text-neutral-600 dark:text-neutral-400">
-                    Información pública mostrada en tu portafolio
-                </p>
+        <Section
+            title="Perfil"
+            description="Información pública mostrada en tu portafolio"
+        >
+
+            <div className="flex justify-end">
+                <Link
+                    href="/dashboard/profile/edit"
+                    className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold hover:bg-neutral-200/75 dark:hover:bg-neutral-800 
+                    text-neutral-700 dark:text-neutral-300 transition cursor-pointer"
+                >
+                    <Edit size={16} />
+                    Editar perfil
+                </Link>
             </div>
 
             {/* MAIN CARD */}
-            <div className="p-6 rounded-md border border-neutral-200 dark:border-neutral-800 bg-white/60 
-            dark:bg-neutral-900/60 backdrop-blur-md flex flex-col gap-6">
+            <div className="p-6 rounded-md border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 flex flex-col gap-6">
 
                 <div className='flex flex-col md:flex-row items-center gap-4'>
                     {/* AVATAR */}
