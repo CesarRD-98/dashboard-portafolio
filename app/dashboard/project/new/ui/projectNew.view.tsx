@@ -99,16 +99,10 @@ export function ProjectNewView() {
     };
 
     return (
-        <Section id="new-project">
-            {/* HEADER */}
-            <div className="space-y-1">
-                <h1 className="text-2xl font-semibold text-neutral-900 dark:text-white">
-                    Nuevo Proyecto
-                </h1>
-                <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                    Agrega un nuevo proyecto a tu portafolio
-                </p>
-            </div>
+        <Section
+            title="Nuevo Proyecto"
+            description="Agrega un nuevo proyecto a tu portafolio"
+        >
 
             {/* FORM */}
             <form
