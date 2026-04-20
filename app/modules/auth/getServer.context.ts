@@ -6,7 +6,13 @@ export async function getServerAuthContext(): Promise<{ user: User, supabase: Su
     const supabase = await getSupabaseServer()
     const { data: { user }, error } = await supabase.auth.getUser();
 
-    if (error || !user) { throw new AppError('error', 'Usuario no autenticado'); }
+    if (error) {
+        throw new AppError('error', 'Sesión inválida')
+    }
+
+    if (!user) {
+        throw new AppError('error', 'Usuario no autenticado');
+    }
 
     return {
         user,
