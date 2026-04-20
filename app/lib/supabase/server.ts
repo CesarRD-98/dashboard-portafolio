@@ -10,13 +10,9 @@ export async function getSupabaseServer() {
         {
             cookies: {
                 getAll: () => cookieStore.getAll(),
-                setAll: (cookies) => {
-                    cookies.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
+                setAll: (cookiesToSet) => {
+                    cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
                 },
-            },
-            auth: {
-                persistSession: false,
-                autoRefreshToken: false,
             },
         }
     );
