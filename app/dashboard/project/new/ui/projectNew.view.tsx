@@ -9,21 +9,14 @@ import { Select } from "@/app/components/shared/forms/Select";
 import { Textarea } from "@/app/components/shared/forms/Textarea";
 import { useToast } from "@/app/components/toast/toast.provider";
 import { createProjectAction } from "@/app/modules/projects/actions/projects.action";
+import { ProjectDto } from "@/app/modules/projects/projects.model";
 import { FormEvent, useState } from "react";
-
-type FormState = {
-    title: string;
-    description: string;
-    stack: string;
-    role: string;
-    link: string;
-};
 
 export function ProjectNewView() {
     const { showToast } = useToast();
     const [loading, setLoading] = useState<boolean>(false);
 
-    const [form, setForm] = useState<FormState>({
+    const [form, setForm] = useState<ProjectDto>({
         title: "",
         description: "",
         stack: "",
@@ -33,7 +26,7 @@ export function ProjectNewView() {
 
     const [image, setImage] = useState<File | null>(null);
 
-    const handleChange = (key: keyof FormState, value: string) => {
+    const handleChange = (key: keyof ProjectDto, value: string) => {
         setForm((prev) => ({ ...prev, [key]: value }));
     };
 
@@ -107,7 +100,7 @@ export function ProjectNewView() {
             {/* FORM */}
             <form
                 onSubmit={handleSubmit}
-                className="p-6 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white/60 dark:bg-neutral-900/60 backdrop-blur-md flex flex-col gap-6"
+                className="p-6 rounded-md border border-neutral-200 dark:border-neutral-800 bg-white/60 dark:bg-neutral-900/60 backdrop-blur-md flex flex-col gap-6"
             >
 
                 <Field label="Título">

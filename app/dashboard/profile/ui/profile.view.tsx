@@ -60,30 +60,16 @@ export function ProfileView({ profile }: Props) {
                     </div>
                 </div>
 
-                {/* FULL BIO */}
-                <div className="p-5 rounded-md border border-neutral-200 dark:border-neutral-800 bg-white/40 dark:bg-neutral-900/40
-                        flex flex-col gap-2">
-                    <span className="text-sm font-medium text-neutral-500">
-                        Biografía completa
-                    </span>
-
-                    <div className="">
-                        <p className="text-base text-neutral-700 dark:text-neutral-300 leading-relaxed">
-                            {profile.fullBio}
-                        </p>
-                    </div>
-                </div>
-
                 {/* ENFOQUE */}
                 <div className="p-5 rounded-md border border-neutral-200 dark:border-neutral-800 bg-white/40 dark:bg-neutral-900/40
                         flex flex-col gap-2
                     ">
                     <span className="text-sm font-medium text-neutral-500">
-                        Enfoque actual
+                        Línea de etiqueta
                     </span>
 
                     <p className="text-base text-neutral-700 dark:text-neutral-300 leading-relaxed">
-                        {profile.learningFocus}
+                        {profile.tagLine}
                     </p>
                 </div>
 

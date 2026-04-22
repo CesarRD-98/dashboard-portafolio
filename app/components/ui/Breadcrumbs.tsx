@@ -13,6 +13,39 @@ const routeMap: Record<string, string> = {
     skill: "Habilidades",
 }
 
+const isUUID = (str: string) => /^[0-9a-fA-F-]{36}$/.test(str)
+
+const isDynamicSegment = (str: string) => {
+    return isUUID(str) || /^[0-9a-fA-F]{24}$/.test(str) // Mongo-like
+}
+
+function resolveLabel(
+    segment: string,
+    index: number,
+    segments: string[]
+) {
+
+    if (routeMap[segment]) return routeMap[segment]
+
+    if (isDynamicSegment(segment)) {
+        const prev = segments[index - 1]
+
+        switch (prev) {
+            case "project":
+                return "Detalle del proyecto"
+            case "contact":
+                return "Detalle del contacto"
+            case "skill":
+                return "Detalle de habilidad"
+            default:
+                return "Detalle"
+        }
+    }
+
+    // 3. Fallback → capitalizar bonito
+    return segment.charAt(0).toUpperCase() + segment.slice(1)
+}
+
 export function Breadcrumbs() {
     const pathname = usePathname() ?? ""
 
@@ -20,7 +53,8 @@ export function Breadcrumbs() {
 
     const paths = segments.map((segment, index) => {
         const href = "/" + segments.slice(0, index + 1).join("/")
-        const label = routeMap[segment] ?? segment
+
+        const label = resolveLabel(segment, index, segments)
 
         return { href, label }
     })
