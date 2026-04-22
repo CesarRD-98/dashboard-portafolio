@@ -4,8 +4,8 @@ import { AppModules } from "@/app/lib/app_modules/appModules"
 import { usePathname, useRouter } from "next/navigation"
 import { useSidebar } from "./sidebar.provider"
 import { HomeIcon, PanelLeft } from "lucide-react"
-import clsx from "clsx"
 import { SidebarItem } from "./SidebarItem"
+import clsx from "clsx"
 
 export function Sidebar() {
     const pathname = usePathname() ?? ""
@@ -43,8 +43,8 @@ export function Sidebar() {
                     {!isCollapsed && <span className="text-sm font-semibold">Menú</span>}
 
                     <button
-                        onClick={toggleCollapse}
-                        className="p-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800"
+                        onClick={() => isDesktop ? toggleCollapse() : close()}
+                        className="p-2 rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer"
                     >
                         <PanelLeft size={18} />
                     </button>
