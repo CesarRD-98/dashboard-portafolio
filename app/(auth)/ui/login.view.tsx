@@ -1,23 +1,32 @@
 'use client'
 
+import { ButtonSubmit } from "@/app/components/shared/forms/ButtonSubmit"
 import { useToast } from "@/app/components/toast/toast.provider"
-import { Spinner } from "@/app/components/ui/spinner/Spinner"
 import { AppError } from "@/app/lib/errors/AppError"
+import { LoginDto } from "@/app/modules/auth/auth.model"
 import { AuthService } from "@/app/modules/auth/auth.service"
 import { isEmail } from "@/app/utils/isEmail"
 import { useRouter } from "next/navigation"
 import { FormEvent, useState } from "react"
 import { FaRightToBracket } from "react-icons/fa6"
 
-export default function LoginView() {
-    const router = useRouter()
+export function LoginView() {
     const { showToast } = useToast()
+    const router = useRouter();
 
-    const [email, setEmail] = useState<string>('')
-    const [password, setPassword] = useState<string>('')
+    const [form, setForm] = useState<LoginDto>({
+        email: '',
+        password: ''
+    })
+
     const [loading, setLoading] = useState<boolean>(false)
+    const [showPassword, setShowPassword] = useState<boolean>(false)
 
-    const isValid = email.trim() !== '' && password.trim() !== '' && isEmail(email)
+    const isValid = form.email.trim() !== '' && form.password.trim() !== '' && isEmail(form.email)
+
+    const handleChange = (key: keyof LoginDto, value: string) => {
+        setForm(prev => ({ ...prev, [key]: value }))
+    }
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault()
@@ -25,13 +34,13 @@ export default function LoginView() {
 
         try {
             setLoading(true)
-            const success = await AuthService.login({ email, password })
+            const success = await AuthService.login(form)
+
             if (success) {
+                setForm({ email: '', password: '' })
                 router.push('/dashboard')
             }
 
-            setEmail('')
-            setPassword('')
         } catch (error: unknown) {
             if (error instanceof AppError) {
                 showToast({
@@ -48,11 +57,11 @@ export default function LoginView() {
 
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-white dark:bg-neutral-900 px-4">
+        <div className="min-h-screen flex items-center justify-center bg-white dark:bg-neutral-800 px-4">
 
             {/* CARD */}
-            <div className="w-full max-w-md p-8 rounded-xl border border-neutral-200 dark:border-neutral-800
-                    bg-white/60 dark:bg-neutral-900/60 backdrop-blur-md flex flex-col gap-6">
+            <div className="w-full max-w-md p-8 rounded-md border border-neutral-200 dark:border-neutral-900
+                    bg-white/60 dark:bg-neutral-900 backdrop-blur-md flex flex-col gap-6">
 
                 {/* HEADER */}
                 <div>
@@ -74,8 +83,8 @@ export default function LoginView() {
                         </label>
                         <input
                             type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            value={form.email}
+                            onChange={(e) => handleChange('email', e.target.value)}
                             className="px-3 py-2 rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 
                             text-sm focus:outline-none focus:ring-2 focus:ring-blue-600/75"/>
                     </div>
@@ -85,38 +94,40 @@ export default function LoginView() {
                         <label className="text-sm text-neutral-800 dark:text-neutral-200">
                             Contraseña
                         </label>
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="px-3 py-2 rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 
-                            text-sm focus:outline-none focus:ring-2 focus:ring-blue-600/75"/>
+
+                        <div className="flex flex-col gap-2">
+                            <input
+                                type={showPassword ? 'text' : 'password'}
+                                value={form.password}
+                                onChange={(e) => handleChange('password', e.target.value)}
+                                className="w-full px-3 py-2 rounded-md border border-neutral-300 dark:border-neutral-700 
+                                bg-white dark:bg-neutral-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600/75"
+                            />
+
+                            <label className="flex items-center pt-1 gap-2 w-fit text-sm text-neutral-400 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    checked={showPassword}
+                                    onChange={(e) => setShowPassword(e.target.checked)}
+                                    className="cursor-pointer"
+                                />
+                                Mostrar contraseña
+                            </label>
+                        </div>
                     </div>
 
                     {/* ERROR */}
-                    {!isEmail(email) && email.trim() !== '' && (
+                    {!isEmail(form.email) && form.email.trim() !== '' && (
                         <p className="text-sm text-red-500">Formato de correo no válido</p>
                     )}
 
                     {/* BUTTON */}
-                    <button
-                        type="submit"
-                        disabled={!isValid || loading}
-                        className={`mt-2 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium
-                                transition-all duration-200 ease-out
-                                ${isValid
-                                ? 'bg-blue-600 text-white hover:bg-blue-500 cursor-pointer'
-                                : 'bg-neutral-200 dark:bg-neutral-700 text-neutral-400 cursor-not-allowed'
-                            }`}>
-                        {loading ? (
-                            <Spinner />
-                        ) : (
-                            <>
-                                Verificar
-                                <FaRightToBracket />
-                            </>
-                        )}
-                    </button>
+                    <ButtonSubmit
+                        isValid={isValid}
+                        loading={loading}
+                        text="Verificar"
+                        icon={<FaRightToBracket />}
+                    />
 
                 </form>
             </div>

@@ -5,10 +5,9 @@ import { ProfileService } from "../modules/profile/profile.service";
 import { getSupabaseServer } from "../lib/supabase/server";
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
-    const supabasa = await getSupabaseServer();
-    const { data: { user }, error } = await supabasa.auth.getUser();
+    const supabase = await getSupabaseServer();
+    const { data: { user } } = await supabase.auth.getUser();
 
-    if (error) { redirect("/") }
     if (!user) { redirect("/") }
 
     const profile = await ProfileService.getOne();

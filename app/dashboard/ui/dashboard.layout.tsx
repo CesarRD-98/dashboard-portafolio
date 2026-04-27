@@ -3,10 +3,10 @@
 import { Header } from "@/app/components/layout/header/Header"
 import { Sidebar } from "@/app/components/sidebar/Sidebar"
 import { SidebarProvider, useSidebar } from "@/app/components/sidebar/sidebar.provider"
+import { ConfirmProvider } from "@/app/components/shared/modals/confirm.provider"
 import { Profile } from "@/app/modules/profile/profile.model"
 import { ReactNode } from "react"
 import clsx from "clsx"
-import { ConfirmProvider } from "@/app/components/shared/modals/confirm.provider"
 
 type Props = {
     children: ReactNode

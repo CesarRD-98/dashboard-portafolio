@@ -28,5 +28,5 @@ export function mapSupabaseError(error: SupabaseError): AppError {
         return new AppError('error', 'Formato de dato inválido o undefined');
     }
 
-    return new AppError('error', 'Ocurrió un error inesperado');
+    return new AppError('error', `Ocurrio un error: ${error.message}`);
 }
