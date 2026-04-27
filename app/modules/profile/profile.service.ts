@@ -7,9 +7,9 @@ import { getServerAuthContext } from "../auth/getServer.context";
 
 export const ProfileService = {
     getOne: async (): Promise<Profile> => {
-        const { user, supabase } = await getServerAuthContext()
+        const { userId, supabase } = await getServerAuthContext()
 
-        const { data, error } = await supabase.from('profiles').select('*').eq('id', user.id).maybeSingle();
+        const { data, error } = await supabase.from('profiles').select('*').eq('id', userId).maybeSingle();
 
         if (error) { throw mapSupabaseError(error) }
         if (!data) { throw new AppError("warning", 'Usuario no encontrado'); }
@@ -18,7 +18,7 @@ export const ProfileService = {
     },
 
     update: async (dto: ProfileDto) => {
-        const { user, supabase } = await getServerAuthContext()
+        const { userId, supabase } = await getServerAuthContext()
 
         const { avatar, cv, year, ...rest } = dto;
         const updateData: Record<string, unknown> = { ...rest };
@@ -30,16 +30,16 @@ export const ProfileService = {
         }
 
         if (avatar) {
-            const avatarUrl = await uploadFileStorage(supabase, avatar, 'avatar', user.id);
+            const avatarUrl = await uploadFileStorage(supabase, avatar, 'avatar', userId);
             updateData.avatarUrl = avatarUrl;
         }
 
         if (cv) {
-            const cvUrl = await uploadFileStorage(supabase, cv, 'cv', user.id);
+            const cvUrl = await uploadFileStorage(supabase, cv, 'cv', userId);
             updateData.cvUrl = cvUrl;
         }
 
-        const { error } = await supabase.from('profiles').update(toSnakeCase(updateData)).eq('id', user.id);
+        const { error } = await supabase.from('profiles').update(toSnakeCase(updateData)).eq('id', userId);
 
         if (error) {
             throw new AppError('error', error.message);

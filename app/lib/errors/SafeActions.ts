@@ -1,4 +1,5 @@
 import { AppError } from "@/app/lib/errors/AppError"
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 
 type ActionResponse<T = null> =
     | { success: true; data?: T }
@@ -18,6 +19,10 @@ export function safeAction<TArgs extends unknown[], TReturn>(fn: (...args: TArgs
 
         } catch (error: unknown) {
 
+            if (isRedirectError(error)) {
+                throw error
+            }
+
             if (error instanceof AppError) {
                 return {
                     success: false,
@@ -27,8 +32,6 @@ export function safeAction<TArgs extends unknown[], TReturn>(fn: (...args: TArgs
                     }
                 }
             }
-
-            console.error(error)
 
             return {
                 success: false,

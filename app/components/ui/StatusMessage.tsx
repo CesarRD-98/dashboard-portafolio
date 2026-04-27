@@ -1,12 +1,13 @@
 import { AlertCircle, Inbox, CheckCircle, AlertTriangle, } from 'lucide-react';
+import { ReactNode } from 'react';
 
 type StatusMessageProps = {
     title: string;
     message?: string;
     variant?: 'empty' | 'error' | 'success' | 'warning';
     size?: 'sm' | 'md' | 'lg';
-    icon?: React.ReactNode;
-    action?: React.ReactNode;
+    icon?: ReactNode;
+    action?: ReactNode;
 };
 
 export function StatusMessage({

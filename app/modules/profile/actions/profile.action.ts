@@ -17,4 +17,5 @@ export const updateProfileAction = safeAction(async (formData: FormData) => {
     await ProfileService.update(dto);
 
     revalidatePath('/profile');
+    revalidatePath('/profile/edit');
 })

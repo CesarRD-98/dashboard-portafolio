@@ -1,5 +1,8 @@
+'use client'
+
 import { Section } from "@/app/components/layout/Section";
 import { Profile } from "@/app/modules/profile/profile.model";
+import { formatDate } from "date-fns";
 import { Edit } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -87,12 +90,7 @@ export function ProfileView({ profile }: Props) {
                     </Link>
 
                     <span className="text-sm text-neutral-500 whitespace-nowrap">
-                        {profile.updatedAt
-                            ? new Date(profile.updatedAt).toLocaleString('es-HN', {
-                                dateStyle: 'medium',
-                                timeStyle: 'short',
-                            })
-                            : '-'}
+                        {formatDate(new Date(profile.updatedAt), "dd MMM yyyy hh:mm a")}
                     </span>
                 </div>
 

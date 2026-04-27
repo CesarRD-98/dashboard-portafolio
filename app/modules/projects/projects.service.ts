@@ -7,8 +7,8 @@ import { getServerAuthContext } from "../auth/getServer.context";
 export const ProjectsService = {
     // ==========================================================
     async getAll(): Promise<Project[]> {
-        const { user, supabase } = await getServerAuthContext()
-        const { data, error } = await supabase.from('projects').select('*').eq('user_id', user.id).order('created_at', { ascending: false })
+        const { userId, supabase } = await getServerAuthContext()
+        const { data, error } = await supabase.from('projects').select('*').eq('user_id', userId).order('created_at', { ascending: false })
 
         if (error) throw mapSupabaseError(error)
 
@@ -27,13 +27,13 @@ export const ProjectsService = {
 
     // ==========================================================
     async create(dto: ProjectDto): Promise<void> {
-        const { user, supabase } = await getServerAuthContext()
+        const { userId, supabase } = await getServerAuthContext()
 
         const { img, stack, ...rest } = dto
         const newProject: Record<string, unknown> = { ...rest }
 
         if (img) {
-            const imgUrl = await uploadFileStorage(supabase, img, "projectImage", user.id)
+            const imgUrl = await uploadFileStorage(supabase, img, "projectImage", userId)
             newProject.imgUrl = imgUrl
         }
 
@@ -41,7 +41,7 @@ export const ProjectsService = {
             newProject.stack = stack.split(',').map(str => str.trim()).filter(Boolean)
         }
 
-        newProject.userId = user.id
+        newProject.userId = userId
 
         const { error } = await supabase.from('projects').insert([toSnakeCase(newProject)])
 
@@ -58,14 +58,14 @@ export const ProjectsService = {
     },
 
     // ==========================================================
-    async update( id: string, dto: ProjectDto): Promise<void> {
-        const { user, supabase } = await getServerAuthContext()
+    async update(id: string, dto: ProjectDto): Promise<void> {
+        const { userId, supabase } = await getServerAuthContext()
 
         const { img, stack, ...rest } = dto
         const updateData: Record<string, unknown> = { ...rest }
 
         if (img) {
-            const imgUrl = await uploadFileStorage(supabase, img, "projectImage", user.id)
+            const imgUrl = await uploadFileStorage(supabase, img, "projectImage", userId)
             updateData.imgUrl = imgUrl
         }
 
@@ -73,7 +73,7 @@ export const ProjectsService = {
             updateData.stack = stack.split(',').map(str => str.trim()).filter(Boolean)
         }
 
-        const { error } = await supabase.from('projects').update(toSnakeCase(updateData)).eq('id', id).eq('user_id', user.id)
+        const { error } = await supabase.from('projects').update(toSnakeCase(updateData)).eq('id', id).eq('user_id', userId)
 
         if (error) throw mapSupabaseError(error)
     },

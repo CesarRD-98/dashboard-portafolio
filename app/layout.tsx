@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Dashboard",
-  description: "Panel administrativo para el portafolio",
+  description: "Panel administrativo",
 };
 
 export default function RootLayout({
