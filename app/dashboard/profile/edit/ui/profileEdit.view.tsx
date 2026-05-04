@@ -7,8 +7,10 @@ import { Input } from "@/app/components/shared/forms/Input"
 import { InputFile } from "@/app/components/shared/forms/InputFile"
 import { Textarea } from "@/app/components/shared/forms/Textarea"
 import { useToast } from "@/app/components/toast/toast.provider"
+import { AppError } from "@/app/lib/errors/AppError"
 import { updateProfileAction } from "@/app/modules/profile/actions/profile.action"
 import { Profile, ProfileDto } from "@/app/modules/profile/profile.model"
+import { Save } from "lucide-react"
 import { FormEvent, useEffect, useState } from "react"
 
 type Props = {
@@ -38,9 +40,9 @@ export function ProfileEditView({ profile }: Props) {
         }))
     }
 
-    const hasChanges = initialForm ? Object.keys(form).some((key) => {
-        const _key = key as keyof ProfileDto
-        return (form[_key] ?? '') !== (initialForm[_key] ?? '')
+    const hasChanges = initialForm ? Object.keys(form).some((K) => {
+        const key = K as keyof ProfileDto
+        return (form[key] ?? '') !== (initialForm[key] ?? '')
     }) || avatar !== null || cv !== null
         : false
 
@@ -72,26 +74,24 @@ export function ProfileEditView({ profile }: Props) {
 
         try {
             setLoading(true);
-
-            const result = await updateProfileAction(formData);
-
-            if (!result.success) {
-                showToast({
-                    title: 'Error',
-                    message: result.error?.message ?? 'Error desconocido',
-                    type: result.error?.type ?? 'error'
-                });
-                return;
-            }
+            await updateProfileAction(formData);
 
             showToast({
                 title: 'Éxito',
-                message: 'Perfil actualizado exitosamente',
+                message: 'Perfil actualizado correctamente',
                 type: 'success'
             });
 
             setCv(null)
             setAvatar(null)
+
+        } catch (error: unknown) {
+            if (error instanceof AppError) {
+                showToast({
+                    message: error.message,
+                    type: error.type
+                });
+            }
 
         } finally {
             setLoading(false);
@@ -115,6 +115,7 @@ export function ProfileEditView({ profile }: Props) {
 
     return (
         <Section
+            id="profile-edit"
             title="Editar perfil"
             description="Actualiza la información pública de tu portafolio"
         >
@@ -180,7 +181,7 @@ export function ProfileEditView({ profile }: Props) {
                 </div>
 
                 {/* FILES */}
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="grid gap-6 md:grid-cols-3">
                     <Field label="Avatar o Imagen de perfil">
                         <InputFile
                             helperText="JPG, PNG o GIF"
@@ -200,7 +201,14 @@ export function ProfileEditView({ profile }: Props) {
                     </Field>
                 </div>
 
-                <ButtonSubmit isValid={hasChanges && !loading} loading={loading} text="Guardar cambios"/>
+                <div className="flex justify-start">
+                    <ButtonSubmit
+                        isValid={hasChanges && !loading}
+                        loading={loading}
+                        text="Guardar cambios"
+                        icon={<Save size={18} />}
+                    />
+                </div>
 
             </form>
         </Section>

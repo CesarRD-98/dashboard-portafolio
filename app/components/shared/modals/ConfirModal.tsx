@@ -113,7 +113,7 @@ export function ConfirmModal({
                         onClick={handleClose}
                         disabled={loading}
                         className="px-4 py-2 text-sm rounded-md border border-neutral-200 dark:border-neutral-700 
-            hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
+                        hover:bg-neutral-100 dark:hover:bg-neutral-800 transition cursor-pointer"
                     >
                         {cancelText}
                     </button>
@@ -122,7 +122,7 @@ export function ConfirmModal({
                         onClick={handleConfirm}
                         disabled={loading}
                         className={clsx(
-                            "px-4 py-2 text-sm rounded-md text-white flex items-center gap-2 transition",
+                            "px-4 py-2 text-sm rounded-md text-white flex items-center gap-2 transition cursor-pointer",
                             variantStyles[variant],
                             loading && "opacity-80 cursor-not-allowed"
                         )}

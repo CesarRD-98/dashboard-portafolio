@@ -1,6 +1,8 @@
 'use client'
 
 import { Project } from "@/app/modules/projects/projects.model"
+import { formatDate } from "date-fns"
+import { Edit, Trash } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 
@@ -65,23 +67,25 @@ export function ProjectCard({ project, onDelete }: Props) {
             </div>
 
             {/* FOOTER */}
-            <div className="flex items-center justify-between pt-2 border-t border-neutral-200 dark:border-neutral-800">
+            <div className="flex items-center justify-between pt-3 border-t border-neutral-200/70 dark:border-neutral-800/70">
                 <span className="text-xs text-neutral-500">
-                    {new Date(project.createdAt).toLocaleDateString()}
+                    {formatDate(new Date(project.createdAt), "dd MMM yyyy hh:mm a")}
                 </span>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4">
                     <Link
                         href={`/dashboard/project/${project.id}`}
-                        className="text-sm text-blue-600 hover:underline"
+                        className="text-sm font-medium text-blue-500/80 hover:underline"
                     >
+                        <Edit size={14} className="inline-block mr-1" />
                         Editar
                     </Link>
 
                     <button
                         onClick={() => onDelete?.(project)}
-                        className="text-sm text-red-500 hover:underline cursor-pointer"
+                        className="text-sm font-medium text-red-500/80 hover:underline cursor-pointer"
                     >
+                        <Trash size={14} className="inline-block mr-1" />
                         Eliminar
                     </button>
                 </div>

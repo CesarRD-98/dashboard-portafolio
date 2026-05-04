@@ -14,6 +14,7 @@ type Props = {
 export function ProfileView({ profile }: Props) {
     return (
         <Section
+            id="profile"
             title="Perfil"
             description="Información pública mostrada en tu portafolio"
         >

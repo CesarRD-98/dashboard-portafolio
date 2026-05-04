@@ -7,7 +7,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ProjectCard } from "./components/ProjectCard"
 import { Plus } from "lucide-react"
-import { deleteProjectAction } from "@/app/modules/projects/actions/projects.action"
+import { deleteProject } from "@/app/modules/projects/actions/projects.action"
 import { useToast } from "@/app/components/toast/toast.provider"
 import { useConfirm } from "@/app/components/shared/modals/confirm.provider"
 
@@ -28,7 +28,7 @@ export function ProjectView({ projects }: Props) {
             variant: "danger",
             action: async () => {
                 try {
-                    await deleteProjectAction(project.id)
+                    await deleteProject(project.id)
 
                     showToast({
                         title: "Proyecto eliminado",
@@ -48,13 +48,25 @@ export function ProjectView({ projects }: Props) {
     }
 
     return (
-        <Section title="Mis Proyectos" description="Gestiona tus proyectos">
+        <Section id="projects" title="Mis Proyectos" description="Gestiona tus proyectos">
+
+            <div className="flex justify-end">
+                <Link
+                    href="/dashboard/project/new"
+                    className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold hover:bg-neutral-200/75 dark:hover:bg-neutral-800 
+                            text-neutral-700 dark:text-neutral-300 transition cursor-pointer"
+                >
+                    <Plus size={16} />
+                    Nuevo proyecto
+                </Link>
+            </div>
+
             {!projects.length ? (
                 <StatusMessage
                     title="No hay proyectos disponibles"
                     action={
                         <button
-                            className="bg-transparent border-0 px-4 py-2 m-2 text-blue-500 hover:text-blue-600 underline cursor-pointer"
+                            className="bg-transparent text-sm border-0 px-4 py-2 m-2 text-blue-500 hover:underline cursor-pointer"
                             onClick={() => router.refresh()}
                         >
                             Recargar
@@ -62,30 +74,15 @@ export function ProjectView({ projects }: Props) {
                     }
                 />
             ) : (
-                <>
-                    {/* HEADER */}
-                    <div className="flex justify-end">
-                        <Link
-                            href="/dashboard/project/new"
-                            className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold hover:bg-neutral-200/75 dark:hover:bg-neutral-800 
-                            text-neutral-700 dark:text-neutral-300 transition cursor-pointer"
-                        >
-                            <Plus size={16} />
-                            Nuevo proyecto
-                        </Link>
-                    </div>
-
-                    {/* GRID */}
-                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                        {projects.map(project => (
-                            <ProjectCard
-                                key={project.id}
-                                project={project}
-                                onDelete={handleDelete}
-                            />
-                        ))}
-                    </div>
-                </>
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    {projects.map(project => (
+                        <ProjectCard
+                            key={project.id}
+                            project={project}
+                            onDelete={handleDelete}
+                        />
+                    ))}
+                </div>
             )}
         </Section>
     )

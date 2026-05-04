@@ -24,13 +24,13 @@ export function Sidebar() {
             {!isDesktop && isOpen && (
                 <div
                     onClick={close}
-                    className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity"
+                    className="fixed inset-0 z-20 bg-black/40 backdrop-blur-sm transition-opacity"
                 />
             )}
 
             <aside
                 className={clsx(
-                    "fixed inset-y-0 left-0 z-50 flex flex-col bg-white dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-800 transition-all duration-300",
+                    "fixed inset-y-0 left-0 z-20 flex flex-col bg-white dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-800 transition-all duration-300",
                     isDesktop && (isCollapsed ? "w-[80px]" : "w-[260px]"),
                     !isDesktop && [
                         "w-[260px]",

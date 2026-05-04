@@ -3,8 +3,8 @@ import { Spinner } from "../../ui/spinner/Spinner";
 
 type Props = {
     className?: string;
-    isValid: boolean;
-    loading: boolean;
+    isValid?: boolean;
+    loading?: boolean;
     text?: string;
     icon?: ReactNode;
 }
@@ -17,7 +17,7 @@ export function ButtonSubmit(
             type="submit"
             disabled={!isValid}
             className={`mt-2 inline-flex items-center justify-center gap-2 px-4 py-2 rounded-md text-sm font-medium 
-                transition-all duration-200 ease-out ${className}
+                transition duration ${className}
                 ${isValid
                     ? 'bg-blue-600 text-white hover:bg-blue-500 cursor-pointer'
                     : 'bg-neutral-200 dark:bg-neutral-700 text-neutral-400 cursor-not-allowed'}`}
@@ -26,8 +26,8 @@ export function ButtonSubmit(
                 <Spinner />
                 : icon ?
                     <>
-                        {text}
                         {icon}
+                        {text}
                     </>
                     : text}
         </button>

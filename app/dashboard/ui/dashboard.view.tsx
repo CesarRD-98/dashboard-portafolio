@@ -34,6 +34,7 @@ const actions = [
 export default function DashboardView() {
     return (
         <Section
+            id="dashboard"
             title="Dashboard"
             description="Accede rápidamente a los módulos principales"
         >
@@ -45,7 +46,7 @@ export default function DashboardView() {
                         <Link
                             key={action.href}
                             href={action.href}
-                            className="group rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
+                            className="group rounded-md border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
                         >
                             <div className="flex items-start gap-4">
                                 <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-600/20">

@@ -7,7 +7,7 @@ import { safeAction } from "@/app/lib/errors/SafeActions"
 import { AppError } from "@/app/lib/errors/AppError"
 import { ProjectsService } from "../projects.service"
 
-export const createProjectAction = safeAction(async (formData: FormData) => {
+export const createProject = safeAction(async (formData: FormData) => {
 
   const dto = mapFormData<ProjectDto>(formData, projectDtoConfig) as ProjectDto
   const { img, stack, ...rest } = dto
@@ -24,12 +24,12 @@ export const createProjectAction = safeAction(async (formData: FormData) => {
 })
 
 
-export const deleteProjectAction = safeAction(async (id: string) => {
+export const deleteProject = safeAction(async (id: string) => {
   await ProjectsService.delete(id)
   revalidatePath('/project')
 })
 
-export const updateProjectAction = safeAction(async (id: string, formData: FormData) => {
+export const updateProject = safeAction(async (id: string, formData: FormData) => {
   const dto = mapFormData<ProjectDto>(formData, projectDtoConfig) as ProjectDto
   await ProjectsService.update(id, dto)
   revalidatePath('/project')
