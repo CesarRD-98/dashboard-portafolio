@@ -22,7 +22,7 @@ export function Header({ profile }: Props) {
     };
 
     return (
-        <header className="sticky top-0 z-10 h-16 border-b border-neutral-200 dark:border-neutral-800 bg-white/80 dark:bg-neutral-900/80">
+        <header className="sticky top-0 z-10 h-16 border-b border-neutral-200 dark:border-neutral-800 bg-white/75 dark:bg-neutral-900/75 backdrop-blur-sm">
             <div className="flex h-full items-center justify-between px-4 md:px-6">
 
                 {/* LEFT */}
@@ -32,7 +32,7 @@ export function Header({ profile }: Props) {
                     {!isDesktop && (
                         <button
                             onClick={toggleOpen}
-                            className="flex h-9 w-9 items-center justify-center rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 transition"
+                            className="flex h-9 w-9 items-center justify-center rounded-md hover:bg-neutral-100 dark:hover:bg-neutral-800 transition cursor-pointer"
                         >
                             <Menu size={18} />
                         </button>
