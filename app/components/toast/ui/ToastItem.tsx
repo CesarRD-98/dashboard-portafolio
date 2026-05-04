@@ -27,36 +27,31 @@ export const ToastItem = ({ toast }: { toast: Toast }) => {
         <div
             onMouseEnter={() => pauseToast(toast.id)}
             onMouseLeave={() => resumeToast(toast.id)}
-            className={`
-                group relative flex items-start gap-3 w-full max-w-sm p-4 rounded-md border border-neutral-200 dark:border-neutral-800
-                bg-neutral-100 dark:bg-neutral-800/50 backdrop-blur-lg shadow-lg transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]
+            className={`group relative flex items-start gap-3 w-full max-w-sm px-6 py-4 rounded-md border border-neutral-200 dark:border-neutral-700 
+                bg-neutral-50 dark:bg-neutral-800/80 shadow-lg transition duration-300
                 ${toast.closing
                     ? "opacity-0 translate-y-2 scale-95"
                     : visible
                         ? "opacity-100 translate-y-0 scale-100"
-                        : "opacity-0 -translate-y-2 scale-95"
-                }`}>
+                        : "opacity-0 -translate-y-2 scale-95"}`}
+        >
+
             {/* ICON */}
             <div
-                className={`
-                    mt-0.5
-                    ${toast.type === "success" && "text-green-500"}
-                    ${toast.type === "error" && "text-red-500"}
-                    ${toast.type === "info" && "text-blue-500"}
-                    ${toast.type === "warning" && "text-yellow-500"}
-                `}
+                className={`mt-0.5 
+                    ${toast.type === "success" && "text-green-500/75"}
+                    ${toast.type === "error" && "text-red-500/75"}
+                    ${toast.type === "info" && "text-blue-500/75"}
+                    ${toast.type === "warning" && "text-yellow-500/75"}`}
             >
                 {icons[toast.type]}
             </div>
 
             {/* CONTENT */}
-            <div className="flex-1">
-                <p className="text-sm font-semibold text-neutral-900 dark:text-white">
-                    {toast.title}
-                </p>
+            <div className="flex gap-4">
 
                 {toast.message && (
-                    <p className="text-sm text-neutral-700 dark:text-neutral-400">
+                    <p className="text-sm text-neutral-700 dark:text-neutral-300">
                         {toast.message}
                     </p>
                 )}
@@ -81,7 +76,7 @@ export const ToastItem = ({ toast }: { toast: Toast }) => {
             </button>
 
             {/* PROGRESS */}
-            <div className="absolute bottom-0 left-0 h-[2px] w-full bg-neutral-200 dark:bg-neutral-800 overflow-hidden rounded-b-lg">
+            <div className="absolute bottom-0 left-0 h-[2px] w-full bg-neutral-200 dark:bg-neutral-800 overflow-hidden rounded-b-md">
                 <div
                     className="h-full bg-blue-500 animate-toast-progress"
                     style={{

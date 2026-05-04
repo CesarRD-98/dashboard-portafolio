@@ -8,8 +8,9 @@ import { InputFile } from "@/app/components/shared/forms/InputFile";
 import { Select } from "@/app/components/shared/forms/Select";
 import { Textarea } from "@/app/components/shared/forms/Textarea";
 import { useToast } from "@/app/components/toast/toast.provider";
-import { createProjectAction } from "@/app/modules/projects/actions/projects.action";
-import { ProjectDto } from "@/app/modules/projects/projects.model";
+import { createProject } from "@/app/modules/projects/actions/projects.action";
+import { ProjectDto, requiredFieldsProject, roleOptions } from "@/app/modules/projects/projects.model";
+import { Save } from "lucide-react";
 import { FormEvent, useState } from "react";
 
 export function ProjectNewView() {
@@ -44,7 +45,10 @@ export function ProjectNewView() {
         return formData;
     };
 
-    const isValid: boolean = Object.values(form).every((value) => value.trim().length > 0) && image !== null;
+    const isFormValid: boolean = requiredFieldsProject.every((field) => {
+        const value = form[field];
+        return typeof value === "string" ? value.trim() !== "" : value !== undefined;
+    });
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -55,7 +59,7 @@ export function ProjectNewView() {
         setLoading(true);
 
         try {
-            const response = await createProjectAction(formData);
+            const response = await createProject(formData);
 
             if (!response.success) {
                 showToast({
@@ -81,18 +85,13 @@ export function ProjectNewView() {
 
 
     const resetForm = () => {
-        setForm({
-            title: "",
-            description: "",
-            stack: "",
-            role: "",
-            link: "",
-        });
+        setForm({ title: "", description: "", stack: "", role: "", link: "", });
         setImage(null);
     };
 
     return (
         <Section
+            id="project-new"
             title="Nuevo Proyecto"
             description="Agrega un nuevo proyecto a tu portafolio"
         >
@@ -137,10 +136,11 @@ export function ProjectNewView() {
                         onChange={(e) => handleChange("role", e.target.value)}
                         required
                     >
-                        <option value="">Selecciona un rol</option>
-                        <option value="Desarrollador Frontend">Frontend</option>
-                        <option value="Desarrollador Backend">Backend</option>
-                        <option value="Desarrollador Fullstack">Fullstack</option>
+                        {roleOptions.map((option) => (
+                            <option key={option.value} value={option.value}>
+                                {option.text}
+                            </option>
+                        ))}
                     </Select>
                 </Field>
 
@@ -163,7 +163,9 @@ export function ProjectNewView() {
                 </Field>
 
                 {/* ACTION */}
-                <ButtonSubmit isValid={isValid} loading={loading} text="Guardar nuevo proyecto" />
+                <div className="flex justify-end">
+                    <ButtonSubmit isValid={isFormValid} loading={loading} text="Guardar proyecto" icon={<Save size={18} />} />
+                </div>
 
             </form>
         </Section>

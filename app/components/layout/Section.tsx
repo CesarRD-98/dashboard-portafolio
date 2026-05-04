@@ -1,14 +1,15 @@
 import { ReactNode } from "react"
 
 type Props = {
+    id?: string
     title?: string
     description?: string
     children: ReactNode
 }
 
-export function Section({ title, description, children }: Props) {
+export function Section({ id = "", title, description, children }: Props) {
     return (
-        <section className="space-y-6">
+        <section id={id} className="space-y-6 scroll-mt-32">
             {(title || description) && (
                 <div>
                     {title && (

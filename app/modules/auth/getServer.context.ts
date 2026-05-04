@@ -1,9 +1,9 @@
 import { AppError } from "@/app/lib/errors/AppError";
-import { getSupabaseServer } from "@/app/lib/supabase/server";
+import { getSupabase } from "@/app/lib/supabase/serverClient";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 export async function getServerAuthContext(): Promise<{ userId: string, supabase: SupabaseClient }> {
-    const supabase = await getSupabaseServer()
+    const supabase = await getSupabase();
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {

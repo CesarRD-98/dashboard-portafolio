@@ -6,7 +6,7 @@ import { getServerAuthContext } from "../auth/getServer.context";
 
 export const ProjectsService = {
     // ==========================================================
-    async getAll(): Promise<Project[]> {
+    getAll: async (): Promise<Project[]> => {
         const { userId, supabase } = await getServerAuthContext()
         const { data, error } = await supabase.from('projects').select('*').eq('user_id', userId).order('created_at', { ascending: false })
 
@@ -16,7 +16,7 @@ export const ProjectsService = {
     },
 
     // ==========================================================
-    async getOne(id: string): Promise<Project> {
+    getOne: async (id: string): Promise<Project> => {
         const { supabase } = await getServerAuthContext()
         const { data, error } = await supabase.from('projects').select('*').eq('id', id).single()
 
@@ -26,7 +26,7 @@ export const ProjectsService = {
     },
 
     // ==========================================================
-    async create(dto: ProjectDto): Promise<void> {
+    create: async (dto: ProjectDto): Promise<void> => {
         const { userId, supabase } = await getServerAuthContext()
 
         const { img, stack, ...rest } = dto
@@ -49,7 +49,7 @@ export const ProjectsService = {
     },
 
     // ==========================================================
-    async delete(id: string): Promise<void> {
+    delete: async (id: string): Promise<void> => {
         const { supabase } = await getServerAuthContext()
 
         const { error } = await supabase.from('projects').delete().eq('id', id)
@@ -58,7 +58,7 @@ export const ProjectsService = {
     },
 
     // ==========================================================
-    async update(id: string, dto: ProjectDto): Promise<void> {
+    update: async (id: string, dto: ProjectDto): Promise<void> => {
         const { userId, supabase } = await getServerAuthContext()
 
         const { img, stack, ...rest } = dto

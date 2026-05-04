@@ -58,10 +58,10 @@ export function StatusMessage({
         >
             <div className="mb-3 opacity-80">{Icon}</div>
 
-            <p className="font-medium">{title}</p>
+            <p className="font-medium text-md">{title}</p>
 
             {message && (
-                <p className="mt-1 opacity-80">{message}</p>
+                <p className="mt-1 opacity-80 text-sm">{message}</p>
             )}
 
             {action && <div className="mt-4">{action}</div>}

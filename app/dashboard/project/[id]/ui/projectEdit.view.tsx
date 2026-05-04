@@ -7,8 +7,9 @@ import { Input } from "@/app/components/shared/forms/Input"
 import { InputFile } from "@/app/components/shared/forms/InputFile"
 import { Textarea } from "@/app/components/shared/forms/Textarea"
 import { useToast } from "@/app/components/toast/toast.provider"
-import { updateProjectAction } from "@/app/modules/projects/actions/projects.action"
+import { updateProject } from "@/app/modules/projects/actions/projects.action"
 import { Project, ProjectDto } from "@/app/modules/projects/projects.model"
+import { Save } from "lucide-react"
 import { FormEvent, useEffect, useState } from "react"
 
 type Props = {
@@ -75,7 +76,7 @@ export function ProjectEditView({ project }: Props) {
         try {
             setLoading(true)
 
-            const response = await updateProjectAction(project.id, formData)
+            const response = await updateProject(project.id, formData)
 
             if (!response.success) {
                 showToast({
@@ -114,6 +115,7 @@ export function ProjectEditView({ project }: Props) {
 
     return (
         <Section
+            id="project-edit"
             title="Editar Proyecto"
             description="Actualiza información de tu proyecto"
         >
@@ -185,7 +187,9 @@ export function ProjectEditView({ project }: Props) {
                 </Field>
 
                 {/* ACTIONS */}
-                <ButtonSubmit isValid={hasChanges} loading={loading} text="Guardar nuevos cambios" />
+                <div className="flex justify-end">
+                    <ButtonSubmit isValid={hasChanges} loading={loading} text="Guardar cambios" icon={<Save size={16} />} />
+                </div>
 
             </form>
         </Section>
