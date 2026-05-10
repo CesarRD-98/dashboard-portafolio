@@ -1,8 +1,9 @@
+import { AppError } from "@/app/lib/errors/AppError";
 import { LoginDto } from "./auth.model";
 import { mapSupabaseError } from "@/app/lib/errors/ErrorMapper";
 
 export const AuthService = {
-    login: async (payload: LoginDto): Promise<boolean> => {
+    login: async (payload: LoginDto): Promise<void> => {
 
         const response = await fetch('/api/auth/login', {
             method: 'POST',
@@ -16,11 +17,9 @@ export const AuthService = {
             const result = await response.json();
             throw mapSupabaseError(result.error);
         }
-
-        return true;
     },
 
-    logout: async (): Promise<boolean> => {
+    logout: async (): Promise<void> => {
         const response = await fetch('/api/auth/logout', {
             method: 'POST',
             headers: {
@@ -32,7 +31,13 @@ export const AuthService = {
             const error = await response.json();
             throw mapSupabaseError(error);
         }
+    },
+    refresh: async (): Promise<void> => {
+        const response = await fetch('/api/auth/refresh');
+        const { session } = await response.json();
 
-        return true;
+        if (!session) {
+            throw new AppError('warning', 'Sesión expirada');
+        }
     }
 }

@@ -14,8 +14,8 @@ type Props = {
 export function ProjectCard({ project, onDelete }: Props) {
     return (
         <div
-            className="p-5 rounded-md border border-neutral-200 dark:border-neutral-800 
-            bg-white/60 dark:bg-neutral-900/60 backdrop-blur-md 
+            className="p-5 rounded-md border border-neutral-200 dark:border-neutral-700 
+            bg-white/60 dark:bg-neutral-900/10 backdrop-blur-sm 
             flex flex-col justify-between gap-4 transition hover:shadow-md"
         >
             {/* TOP */}

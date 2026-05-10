@@ -22,7 +22,7 @@ export function ProfileView({ profile }: Props) {
             <div className="flex justify-end">
                 <Link
                     href="/dashboard/profile/edit"
-                    className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold hover:bg-neutral-200/75 dark:hover:bg-neutral-800 
+                    className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold hover:bg-neutral-200/75 dark:hover:bg-neutral-700 
                     text-neutral-700 dark:text-neutral-300 transition cursor-pointer"
                 >
                     <Edit size={16} />
@@ -31,7 +31,7 @@ export function ProfileView({ profile }: Props) {
             </div>
 
             {/* MAIN CARD */}
-            <div className="p-6 rounded-md border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 flex flex-col gap-6">
+            <div className="p-6 rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900/10 flex flex-col gap-6">
 
                 <div className='flex flex-col md:flex-row items-center gap-4'>
                     {/* AVATAR */}
@@ -64,8 +64,8 @@ export function ProfileView({ profile }: Props) {
                     </div>
                 </div>
 
-                {/* ENFOQUE */}
-                <div className="p-5 rounded-md border border-neutral-200 dark:border-neutral-800 bg-white/40 dark:bg-neutral-900/40
+                {/* TAG LINE */}
+                <div className="p-5 rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900/10
                         flex flex-col gap-2
                     ">
                     <span className="text-sm font-medium text-neutral-500">
@@ -91,7 +91,7 @@ export function ProfileView({ profile }: Props) {
                     </Link>
 
                     <span className="text-sm text-neutral-500 whitespace-nowrap">
-                        {formatDate(new Date(profile.updatedAt), "dd MMM yyyy hh:mm a")}
+                        {formatDate(new Date(profile.updatedAt), "dd MMM yyyy")}
                     </span>
                 </div>
 

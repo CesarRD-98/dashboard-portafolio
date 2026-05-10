@@ -4,7 +4,7 @@ import { ReactNode } from 'react';
 type StatusMessageProps = {
     title: string;
     message?: string;
-    variant?: 'empty' | 'error' | 'success' | 'warning';
+    variant?: 'empty' | 'info' | 'error' | 'success' | 'warning';
     size?: 'sm' | 'md' | 'lg';
     icon?: ReactNode;
     action?: ReactNode;
@@ -23,6 +23,11 @@ export function StatusMessage({
             icon: Inbox,
             styles:
                 'border-neutral-300 text-neutral-600 dark:border-neutral-700 dark:text-neutral-400',
+        },
+        info: {
+            icon: AlertCircle,
+            styles:
+                'border-blue-300 text-blue-600 dark:border-blue-800 dark:text-blue-400',
         },
         error: {
             icon: AlertCircle,
