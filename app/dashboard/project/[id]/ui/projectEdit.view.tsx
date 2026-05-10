@@ -123,8 +123,8 @@ export function ProjectEditView({ project }: Props) {
             {/* FORM */}
             <form
                 onSubmit={handleSubmit}
-                className="p-6 rounded-md border border-neutral-200 dark:border-neutral-800 
-                bg-white/60 dark:bg-neutral-900/60 backdrop-blur-md flex flex-col gap-8"
+                className="p-6 rounded-md border border-neutral-200 dark:border-neutral-700 
+                bg-white/60 dark:bg-neutral-900/10 backdrop-blur-md flex flex-col gap-8"
             >
 
                 {/* GRID */}

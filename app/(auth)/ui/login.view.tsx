@@ -3,7 +3,7 @@
 import { ButtonSubmit } from "@/app/components/shared/forms/ButtonSubmit"
 import { Field } from "@/app/components/shared/forms/Field"
 import { Input } from "@/app/components/shared/forms/Input"
-import { InputPassword } from "@/app/components/shared/forms/InputPassword"
+import { ShowPassword } from "@/app/components/shared/forms/ShowPassword"
 import { useToast } from "@/app/components/toast/toast.provider"
 import { AppError } from "@/app/lib/errors/AppError"
 import { LoginDto } from "@/app/modules/auth/auth.model"
@@ -37,12 +37,10 @@ export function LoginView() {
 
         try {
             setLoading(true)
-            const success = await AuthService.login(form)
+            await AuthService.login(form)
 
-            if (success) {
-                setForm({ email: '', password: '' })
-                router.push('/dashboard')
-            }
+            setForm({ email: '', password: '' })
+            router.push('/dashboard')
 
         } catch (error: unknown) {
             if (error instanceof AppError) {
@@ -60,50 +58,50 @@ export function LoginView() {
 
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-white dark:bg-neutral-900 px-4">
+        <div className="min-h-screen px-4 flex items-center justify-center">
 
             {/* CARD */}
-            <div className="w-full max-w-md p-8 rounded-md border border-neutral-200 dark:border-neutral-700
-                    bg-white dark:bg-neutral-900 shadow-sm flex flex-col gap-6">
+            <div className="w-full max-w-md p-8 rounded-md flex flex-col gap-6 
+                bg-white dark:bg-neutral-900/30 
+                border border-neutral-300 dark:border-neutral-700">
 
                 {/* HEADER */}
                 <div>
-                    <h1 className="text-xl font-semibold text-neutral-900 dark:text-white">
+                    <h1 className="text-xl font-semibold">
                         Acceso administrador
                     </h1>
-                    <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                    <p className="text-sm text-neutral-500 dark:text-neutral-400">
                         Verifica tu identidad para continuar
                     </p>
                 </div>
 
                 {/* FORM */}
-                <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
                     {/* EMAIL */}
                     <Field label="Correo electrónico">
                         <Input
                             id="email"
-                            name="email"
                             type="email" value={form.email}
                             onChange={(e) => handleChange('email', e.target.value)}
                         />
                     </Field>
 
-                    {/* PASSWORD */}
-                    <Field label="Contraseña">
-                        <InputPassword
-                            id="password"
-                            value={form.password}
-                            showPassword={showPassword}
-                            onChange={(value) => handleChange('password', value)}
-                            setShowPassword={setShowPassword}
-                        />
-                    </Field>
-
                     {/* ERROR */}
                     {!isEmail(form.email) && form.email.trim() !== '' && (
-                        <p className="text-sm text-red-500">Formato de correo no válido</p>
+                        <p className="text-xs text-red-500/90">Formato de correo no válido</p>
                     )}
+
+                    {/* PASSWORD */}
+                    <Field label="Contraseña">
+                        <Input
+                            id="password"
+                            type={showPassword ? "text" : "password"}
+                            value={form.password}
+                            onChange={(e) => handleChange('password', e.target.value)}
+                        />
+                        <ShowPassword showPassword={showPassword} handleToggle={setShowPassword} />
+                    </Field>
 
                     {/* BUTTON */}
                     <ButtonSubmit

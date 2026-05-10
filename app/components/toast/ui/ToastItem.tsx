@@ -28,7 +28,7 @@ export const ToastItem = ({ toast }: { toast: Toast }) => {
             onMouseEnter={() => pauseToast(toast.id)}
             onMouseLeave={() => resumeToast(toast.id)}
             className={`group relative flex items-start gap-3 w-full max-w-sm px-6 py-4 rounded-md border border-neutral-200 dark:border-neutral-700 
-                bg-neutral-50 dark:bg-neutral-800/80 shadow-lg transition duration-300
+                bg-neutral-50 dark:bg-neutral-900/30 shadow-lg transition duration-300
                 ${toast.closing
                     ? "opacity-0 translate-y-2 scale-95"
                     : visible

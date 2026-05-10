@@ -22,13 +22,14 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
         const media = window.matchMedia("(min-width: 1024px)")
 
         const handleResize = () => {
-            const desktop = media.matches
+            const desktop: boolean = media.matches
             setIsDesktop(desktop)
 
             if (desktop) {
                 setIsOpen(true)
             } else {
                 setIsOpen(false)
+                setIsCollapsed(false)
             }
         }
 

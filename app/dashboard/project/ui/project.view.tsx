@@ -53,7 +53,7 @@ export function ProjectView({ projects }: Props) {
             <div className="flex justify-end">
                 <Link
                     href="/dashboard/project/new"
-                    className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold hover:bg-neutral-200/75 dark:hover:bg-neutral-800 
+                    className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold hover:bg-neutral-200/75 dark:hover:bg-neutral-700 
                             text-neutral-700 dark:text-neutral-300 transition cursor-pointer"
                 >
                     <Plus size={16} />

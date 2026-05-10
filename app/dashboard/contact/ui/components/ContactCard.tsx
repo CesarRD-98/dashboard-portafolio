@@ -10,8 +10,8 @@ type Props = {
 
 export function ContactCard({ contact, onDelete }: Props) {
     return (
-        <div className="p-5 rounded-xl border border-neutral-200 dark:border-neutral-800 
-        bg-white/70 dark:bg-neutral-900/70 flex flex-col justify-between gap-4 transition"
+        <div className="p-5 rounded-xl border border-neutral-200 dark:border-neutral-700 
+        bg-white/70 dark:bg-neutral-900/10 flex flex-col justify-between gap-4 transition"
         >
             {/* TOP */}
             <div className="flex flex-col gap-3">
