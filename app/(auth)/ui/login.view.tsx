@@ -10,7 +10,7 @@ import { LoginDto } from "@/app/modules/auth/auth.model"
 import { AuthService } from "@/app/modules/auth/auth.service"
 import { isEmail } from "@/app/utils/isEmail"
 import { useRouter } from "next/navigation"
-import { FormEvent, useState } from "react"
+import { FormEvent, useEffect, useState } from "react"
 import { FaRightToBracket } from "react-icons/fa6"
 
 export function LoginView() {
@@ -55,6 +55,16 @@ export function LoginView() {
         }
 
     }
+
+    useEffect(() => {
+        const checkSession = async () => {
+            try { await AuthService.refresh() }
+            catch { router.push('/') }
+        }
+        checkSession();
+        const interaval = setInterval(checkSession, 60 * 60 * 1000);
+        return () => clearInterval(interaval);
+    }, [router]);
 
 
     return (

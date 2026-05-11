@@ -3,13 +3,13 @@
 import { Section } from "@/app/components/layout/Section"
 import { StatusMessage } from "@/app/components/ui/StatusMessage"
 import { Project } from "@/app/modules/projects/projects.model"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ProjectCard } from "./components/ProjectCard"
 import { Plus } from "lucide-react"
 import { deleteProject } from "@/app/modules/projects/actions/projects.action"
 import { useToast } from "@/app/components/toast/toast.provider"
 import { useConfirm } from "@/app/components/shared/modals/confirm.provider"
+import { ButtonLink } from "@/app/components/shared/ButtonLink"
 
 type Props = {
     projects: Project[]
@@ -51,14 +51,7 @@ export function ProjectView({ projects }: Props) {
         <Section id="projects" title="Mis Proyectos" description="Gestiona tus proyectos">
 
             <div className="flex justify-end">
-                <Link
-                    href="/dashboard/project/new"
-                    className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold hover:bg-neutral-200/75 dark:hover:bg-neutral-700 
-                            text-neutral-700 dark:text-neutral-300 transition cursor-pointer"
-                >
-                    <Plus size={16} />
-                    Nuevo proyecto
-                </Link>
+                <ButtonLink href="/dashboard/project/new" icon={Plus} label="Nuevo proyecto" />
             </div>
 
             {!projects.length ? (

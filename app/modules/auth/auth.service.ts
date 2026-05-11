@@ -35,7 +35,7 @@ export const AuthService = {
     refresh: async (): Promise<void> => {
         const response = await fetch('/api/auth/refresh');
         const { session } = await response.json();
-
+        
         if (!session) {
             throw new AppError('warning', 'Sesión expirada');
         }

@@ -5,9 +5,7 @@ import { Sidebar } from "@/app/components/sidebar/Sidebar"
 import { SidebarProvider, useSidebar } from "@/app/components/sidebar/sidebar.provider"
 import { ConfirmProvider } from "@/app/components/shared/modals/confirm.provider"
 import { Profile } from "@/app/modules/profile/profile.model"
-import { ReactNode, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { AuthService } from "@/app/modules/auth/auth.service"
+import { ReactNode } from "react"
 import clsx from "clsx"
 
 type Props = {
@@ -17,17 +15,6 @@ type Props = {
 
 function DashboardLayoutContent({ children, profile }: Props) {
     const { isCollapsed, isDesktop } = useSidebar()
-    const router = useRouter();
-
-    useEffect(() => {
-        const checkSession = async () => {
-            try { await AuthService.refresh() }
-            catch { router.push('/') }
-        }
-        checkSession();
-        const interaval = setInterval(checkSession, 60 * 60 * 1000);
-        return () => clearInterval(interaval);
-    }, [router]);
 
     return (
         <div className="flex min-h-screen">

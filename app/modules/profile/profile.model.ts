@@ -30,3 +30,20 @@ export const profileDtoConfig: FieldConfig<ProfileDto, keyof ProfileDto>[] = [
     { key: 'avatar', type: 'file' },
     { key: 'cv', type: 'file' },
 ];
+
+export interface StatItem {
+    title: string;
+    description: string;
+    count: number;
+}
+
+export interface RecentActivity {
+    createdAt: string;
+    title: string;
+    type: string;
+}
+
+export interface OverviewData {
+    stats: StatItem[];
+    recentActivity: RecentActivity[];
+}

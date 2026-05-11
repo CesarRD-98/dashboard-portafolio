@@ -1,9 +1,11 @@
-import DashboardView from "./ui/dashboard.view";
+import { ProfileService } from "../modules/profile/profile.service";
+import { DashboardView } from "./ui/dashboard.view";
 
 export const metadata = {
     title: 'Dashboard'
 }
 
 export default async function DashboardPage() {
-    return <DashboardView />
+    const data = await ProfileService.overview();
+    return <DashboardView data={data} />
 }

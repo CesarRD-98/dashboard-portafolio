@@ -1,6 +1,7 @@
 'use client'
 
 import { Section } from "@/app/components/layout/Section";
+import { ButtonLink } from "@/app/components/shared/ButtonLink";
 import { Profile } from "@/app/modules/profile/profile.model";
 import { formatDate } from "date-fns";
 import { Edit } from "lucide-react";
@@ -20,20 +21,17 @@ export function ProfileView({ profile }: Props) {
         >
 
             <div className="flex justify-end">
-                <Link
+                <ButtonLink
                     href="/dashboard/profile/edit"
-                    className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold hover:bg-neutral-200/75 dark:hover:bg-neutral-700 
-                    text-neutral-700 dark:text-neutral-300 transition cursor-pointer"
-                >
-                    <Edit size={16} />
-                    Editar perfil
-                </Link>
+                    icon={Edit}
+                    label="Editar perfil"
+                />
             </div>
 
             {/* MAIN CARD */}
-            <div className="p-6 rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900/10 flex flex-col gap-6">
+            <div className="p-6 rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900/30 flex flex-col gap-6">
 
-                <div className='flex flex-col md:flex-row items-center gap-4'>
+                <div className='flex flex-col md:flex-row items-center gap-6'>
                     {/* AVATAR */}
                     <div>
                         <Image
@@ -41,7 +39,7 @@ export function ProfileView({ profile }: Props) {
                             alt="Avatar"
                             width={140}
                             height={140}
-                            className="rounded-md border border-neutral-200 dark:border-neutral-700 object-cover shrink-0"
+                            className="rounded-md border border-neutral-300 dark:border-neutral-700 object-cover shrink-0"
                         />
                     </div>
 
@@ -52,8 +50,8 @@ export function ProfileView({ profile }: Props) {
                                 {profile.author}
                             </h2>
 
-                            <span className="inline-flex items-center px-3 py-1 rounded-md text-sm font-medium 
-                            bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300">
+                            <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium 
+                            bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-200">
                                 Año {profile.year}
                             </span>
                         </div>
@@ -65,7 +63,7 @@ export function ProfileView({ profile }: Props) {
                 </div>
 
                 {/* TAG LINE */}
-                <div className="p-5 rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900/10
+                <div className="p-5 rounded-md border border-neutral-200 dark:border-neutral-700
                         flex flex-col gap-2
                     ">
                     <span className="text-sm font-medium text-neutral-500">
