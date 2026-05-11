@@ -123,8 +123,8 @@ export function ProjectEditView({ project }: Props) {
             {/* FORM */}
             <form
                 onSubmit={handleSubmit}
-                className="p-6 rounded-md border border-neutral-200 dark:border-neutral-700 
-                bg-white/60 dark:bg-neutral-900/10 backdrop-blur-md flex flex-col gap-8"
+                className="p-6 rounded-md border border-neutral-300 dark:border-neutral-700 
+                bg-white dark:bg-neutral-900/30 flex flex-col gap-8"
             >
 
                 {/* GRID */}
@@ -187,7 +187,7 @@ export function ProjectEditView({ project }: Props) {
                 </Field>
 
                 {/* ACTIONS */}
-                <div className="flex justify-end">
+                <div className="flex justify-start">
                     <ButtonSubmit isValid={hasChanges} loading={loading} text="Guardar cambios" icon={<Save size={16} />} />
                 </div>
 

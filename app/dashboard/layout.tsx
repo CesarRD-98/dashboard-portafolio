@@ -9,7 +9,6 @@ export default async function DashboardLayout({ children }: { children: ReactNod
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) { redirect("/") }
-
     const profile = await ProfileService.getOne();
 
     return (

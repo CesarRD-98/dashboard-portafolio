@@ -1,70 +1,108 @@
 "use client";
 
-import Link from "next/link";
-import { User, FolderKanban, Mail, Wrench } from "lucide-react";
+import { ArrowUp, Clock3, FolderKanban } from "lucide-react";
 import { Section } from "@/app/components/layout/Section";
+import { OverviewData } from "@/app/modules/profile/profile.model";
+import { StatCard } from "./components/StatCard";
+import { RecentActivity } from "./components/RecentActivity";
+import { actions } from "./components/config";
+import { ActionCard } from "./components/ActionCard";
+import { ButtonLink } from "@/app/components/shared/ButtonLink";
+import { Fragment } from "react/jsx-runtime";
 
-const actions = [
-    {
-        title: "Perfil",
-        description: "Ver y actualizar tu información personal",
-        href: "/dashboard/profile",
-        icon: User,
-    },
-    {
-        title: "Proyectos",
-        description: "Gestiona tus proyectos",
-        href: "/dashboard/project",
-        icon: FolderKanban,
-    },
-    {
-        title: "Contactos",
-        description: "Administra tus medios de contacto",
-        href: "/dashboard/contact",
-        icon: Mail,
-    },
-    {
-        title: "Habilidades",
-        description: "Edita tus skills y tecnologías",
-        href: "/dashboard/skill",
-        icon: Wrench,
-    },
-];
+type Props = {
+    data: OverviewData;
+};
 
-export default function DashboardView() {
+export function DashboardView({ data }: Props) {
+    const { stats, recentActivity } = data;
+
     return (
         <Section
             id="dashboard"
             title="Dashboard"
-            description="Accede rápidamente a los módulos principales"
+            description="Resumen general de tu portafolio"
         >
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {actions.map((action) => {
-                    const Icon = action.icon;
+            <div className="space-y-6">
 
-                    return (
-                        <Link
-                            key={action.href}
-                            href={action.href}
-                            className="group rounded-md border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900/10 p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg"
-                        >
-                            <div className="flex items-start gap-4">
-                                <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-600/20">
-                                    <Icon size={20} />
-                                </div>
+                <div className="flex justify-end">
+                    <ButtonLink
+                        href="https://www.cesardd.com/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        icon={FolderKanban}
+                        label="Ver portafolio"
+                    />
+                </div>
 
-                                <div>
-                                    <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">
-                                        {action.title}
-                                    </h3>
-                                    <p className="text-xs text-neutral-600 dark:text-neutral-400 mt-1">
-                                        {action.description}
-                                    </p>
-                                </div>
-                            </div>
-                        </Link>
-                    );
-                })}
+                {/* Stats */}
+                <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+                    {stats.map((stat) => (
+                        <StatCard
+                            key={stat.title}
+                            title={stat.title}
+                            count={stat.count}
+                            description={stat.description}
+                        />
+                    ))}
+                </div>
+
+                {/* Recent Activity */}
+                <div className="rounded-md p-6 space-y-5 border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900/30">
+
+                    <div className="flex items-center gap-2">
+                        <Clock3
+                            size={18}
+                            className="text-blue-500"
+                        />
+
+                        <h2 className="text-md font-semibold">
+                            Actividad reciente
+                        </h2>
+                    </div>
+
+                    <div className="space-y-5">
+                        {recentActivity.map((activity, index) => (
+                            <Fragment key={index}>
+                                <RecentActivity
+                                    type={activity.type}
+                                    title={activity.title}
+                                    createdAt={activity.createdAt}
+                                />
+
+                                {index !== recentActivity.length - 1 && <div className="border-b border-neutral-300 dark:border-neutral-700" />}
+                            </Fragment>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Actions */}
+                <div className="space-y-5">
+
+                    <div className="flex items-center gap-2">
+                        <ArrowUp
+                            size={18}
+                            className="rotate-45 text-blue-500"
+                        />
+
+                        <h2 className="text-md font-semibold">
+                            Acciones rápidas
+                        </h2>
+                    </div>
+
+                    <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+                        {actions.map((action) => (
+                            <ActionCard
+                                key={action.href}
+                                href={action.href}
+                                label={action.label}
+                                description={action.description}
+                                icon={action.icon}
+                            />
+                        ))}
+                    </div>
+                </div>
+
             </div>
         </Section>
     );

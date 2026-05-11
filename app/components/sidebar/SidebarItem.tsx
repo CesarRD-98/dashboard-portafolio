@@ -23,7 +23,7 @@ export function SidebarItem({
                 "flex items-center gap-3 w-full rounded-md px-3 py-2.5 text-sm transition-all cursor-pointer",
                 active
                     ? "bg-blue-100 text-blue-700 dark:bg-blue-600/70 dark:text-white"
-                    : "text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-700"
+                    : "text-neutral-600 hover:bg-neutral-200/50 dark:text-neutral-400 dark:hover:bg-neutral-700"
             )}
         >
             <span className="flex h-5 w-5 items-center justify-center shrink-0">
@@ -31,10 +31,7 @@ export function SidebarItem({
             </span>
 
             {/* Label */}
-            <span className={clsx(
-                "whitespace-nowrap transition-all duration-200"
-            )}
-            >
+            <span className="whitespace-nowrap transition-all duration">
                 {collapsed ? "" : label}
             </span>
         </button>

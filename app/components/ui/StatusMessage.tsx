@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { AlertCircle, Inbox, CheckCircle, AlertTriangle, } from 'lucide-react';
 import { ReactNode } from 'react';
 
@@ -57,9 +58,9 @@ export function StatusMessage({
 
     return (
         <div
-            className={`flex flex-col items-center justify-center text-center rounded-xl border transition-colors m-5 
-                ${variants[variant].styles} 
-                ${sizes[size]}`}
+            className={clsx("flex flex-col items-center justify-center text-center rounded-xl border transition-colors m-5",
+                variants[variant].styles,
+                sizes[size])}
         >
             <div className="mb-3 opacity-80">{Icon}</div>
 

@@ -14,9 +14,8 @@ type Props = {
 export function ProjectCard({ project, onDelete }: Props) {
     return (
         <div
-            className="p-5 rounded-md border border-neutral-200 dark:border-neutral-700 
-            bg-white/60 dark:bg-neutral-900/10 backdrop-blur-sm 
-            flex flex-col justify-between gap-4 transition hover:shadow-md"
+            className="p-5 rounded-md border border-neutral-300 dark:border-neutral-700 
+            bg-white dark:bg-neutral-900/30 flex flex-col justify-between gap-4"
         >
             {/* TOP */}
             <div className="flex flex-col gap-3">
@@ -49,8 +48,8 @@ export function ProjectCard({ project, onDelete }: Props) {
                     {project.stack?.map((stack, index) => (
                         <span
                             key={index}
-                            className="px-2 py-1 text-xs rounded-md 
-                            bg-neutral-100 dark:bg-neutral-800 
+                            className="px-2 py-1 text-xs rounded-full 
+                            bg-neutral-100 dark:bg-neutral-700/50 
                             text-neutral-600 dark:text-neutral-300"
                         >
                             {stack}
@@ -67,9 +66,9 @@ export function ProjectCard({ project, onDelete }: Props) {
             </div>
 
             {/* FOOTER */}
-            <div className="flex items-center justify-between pt-3 border-t border-neutral-200/70 dark:border-neutral-800/70">
+            <div className="flex items-center justify-between pt-3 border-t border-neutral-300 dark:border-neutral-700">
                 <span className="text-xs text-neutral-500">
-                    {formatDate(new Date(project.createdAt), "dd MMM yyyy hh:mm a")}
+                    {formatDate(new Date(project.createdAt), "dd MMM yyyy")}
                 </span>
 
                 <div className="flex items-center gap-4">

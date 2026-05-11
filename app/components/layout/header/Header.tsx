@@ -22,7 +22,7 @@ export function Header({ profile }: Props) {
     };
 
     return (
-        <header className="sticky top-0 z-10 h-16 border-b border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 backdrop-blur-sm">
+        <header className="sticky top-0 z-10 h-16 border-b border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 backdrop-blur-sm">
             <div className="flex h-full items-center justify-between px-4 md:px-6">
 
                 {/* LEFT */}
@@ -50,8 +50,8 @@ export function Header({ profile }: Props) {
                     {/* Logout */}
                     <button
                         onClick={handlerLogOut}
-                        className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 
-                        hover:bg-neutral-100 dark:hover:bg-neutral-700 transition cursor-pointer"
+                        className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium tracking-relaxed text-neutral-700 dark:text-neutral-300 
+                        hover:bg-neutral-200/50 dark:hover:bg-neutral-700 transition cursor-pointer"
                     >
                         <span className="hidden sm:inline-flex">Cerrar sesión</span>
                         <LogOut size={18} />

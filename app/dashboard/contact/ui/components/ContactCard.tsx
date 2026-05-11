@@ -10,15 +10,15 @@ type Props = {
 
 export function ContactCard({ contact, onDelete }: Props) {
     return (
-        <div className="p-5 rounded-xl border border-neutral-200 dark:border-neutral-700 
-        bg-white/70 dark:bg-neutral-900/10 flex flex-col justify-between gap-4 transition"
+        <div className="p-5 rounded-md border border-neutral-300 dark:border-neutral-700 
+        bg-white dark:bg-neutral-900/30 flex flex-col justify-between gap-4"
         >
             {/* TOP */}
             <div className="flex flex-col gap-3">
 
                 {/* TITLE + TYPE */}
                 <div className="flex items-start justify-between gap-2">
-                    <h2 className="text-base font-semibold text-neutral-900 dark:text-white line-clamp-2">
+                    <h2 className="text-base font-semibold line-clamp-2">
                         {contact.title}
                     </h2>
 
@@ -35,7 +35,12 @@ export function ContactCard({ contact, onDelete }: Props) {
                 </p>
 
                 {/* EXTRA */}
-                <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex items-center gap-4 flex-wrap">
+                    {contact.isPrimary && (
+                        <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-neutral-700 text-white dark:bg-white/90 dark:text-neutral-900">
+                            Principal
+                        </span>
+                    )}
 
                     {contact.linkUrl && (
                         <Link
@@ -47,17 +52,11 @@ export function ContactCard({ contact, onDelete }: Props) {
                             Abrir enlace
                         </Link>
                     )}
-
-                    {contact.isPrimary && (
-                        <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-neutral-700 text-white dark:bg-white/90 dark:text-neutral-900">
-                            Principal
-                        </span>
-                    )}
                 </div>
             </div>
 
             {/* FOOTER */}
-            <div className="flex items-center justify-between pt-3 border-t border-neutral-200/70 dark:border-neutral-800/70">
+            <div className="flex items-center justify-between pt-3 border-t border-neutral-300 dark:border-neutral-700">
                 <span className="text-xs text-neutral-500">
                     {formatDate(new Date(contact.createdAt), "dd MMM yyyy")}
                 </span>

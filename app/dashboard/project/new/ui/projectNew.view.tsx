@@ -99,7 +99,8 @@ export function ProjectNewView() {
             {/* FORM */}
             <form
                 onSubmit={handleSubmit}
-                className="p-6 rounded-md border border-neutral-200 dark:border-neutral-700 bg-white/60 dark:bg-neutral-900/10 backdrop-blur-md flex flex-col gap-6"
+                className="p-6 rounded-md border border-neutral-300 dark:border-neutral-700 
+                bg-white dark:bg-neutral-900/30 flex flex-col gap-6"
             >
 
                 <Field label="Título">
@@ -121,7 +122,7 @@ export function ProjectNewView() {
                     />
                 </Field>
 
-                <Field label="Stack">
+                <Field label="Tecnologías usadas">
                     <Input
                         value={form.stack}
                         onChange={(e) => handleChange("stack", e.target.value)}
