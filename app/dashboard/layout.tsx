@@ -2,10 +2,11 @@ import { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { DashboardShell } from "./ui/dashboard.layout";
 import { ProfileService } from "../modules/profile/profile.service";
-import { getSupabaseServer } from "../lib/supabase/server";
+import { getSupabaseServerReadonly } from "../lib/supabase/server";
+import { SessionRefresh } from "../components/auth/SessionRefresh";
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
-    const supabase = await getSupabaseServer({ readonly: true });
+    const supabase = await getSupabaseServerReadonly();
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) { redirect("/") }
@@ -13,6 +14,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
 
     return (
         <DashboardShell profile={profile}>
+            <SessionRefresh />
             {children}
         </DashboardShell>
     )

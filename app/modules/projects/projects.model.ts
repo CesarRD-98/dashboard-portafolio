@@ -1,5 +1,5 @@
-import { SelectOption } from "@/app/components/shared/forms/Select"
-import { FieldConfig } from "@/app/lib/forms/forms.mapper"
+import { SelectOption } from "@/app/components/shared/forms/Select";
+import { FieldConfig } from "@/app/lib/forms/form.type";
 
 export interface Project {
     id: string
@@ -23,6 +23,8 @@ export interface ProjectDto {
     link?: string
 }
 
+export const initialProjectForm: ProjectDto = { title: "", description: "", stack: "", role: "", link: "", };
+
 export const projectDtoConfig: FieldConfig<ProjectDto, keyof ProjectDto>[] = [
     { key: 'title', type: 'string' },
     { key: 'description', type: 'string' },
@@ -33,10 +35,10 @@ export const projectDtoConfig: FieldConfig<ProjectDto, keyof ProjectDto>[] = [
 ];
 
 export const roleOptions: SelectOption[] = [
-    { text: "--- Selecciona un rol ---", value: "" },
+    { text: "--- Selecciona rol ---", value: "" },
     { text: "Frontend", value: "Desarrollador Frontend" },
     { text: "Backend", value: "Desarrollador Backend" },
     { text: "Fullstack", value: "Desarrollador Fullstack" },
 ];
 
-export const requiredFieldsProject: (keyof ProjectDto)[] = ['title', 'description', 'img', 'stack', 'role'];
+export const requiredFieldsProject: (keyof ProjectDto)[] = ['title', 'description', 'stack', 'role'];

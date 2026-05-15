@@ -37,9 +37,9 @@ export function DashboardView({ data }: Props) {
 
                 {/* Stats */}
                 <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-                    {stats.map((stat) => (
+                    {stats.map((stat, index) => (
                         <StatCard
-                            key={stat.title}
+                            key={index}
                             title={stat.title}
                             count={stat.count}
                             description={stat.description}
