@@ -3,11 +3,11 @@
 import { safeAction } from "@/app/lib/errors/SafeActions";
 import { ContactService } from "../contact.service";
 import { ContactDto, ContactDtoConfig } from "../contact.model";
-import { mapFormData } from "@/app/lib/forms/forms.mapper";
+import { parseFormData } from "@/app/lib/forms/formData.parser";
 import { revalidatePath } from "next/cache";
 
 export const createContact = safeAction(async (fomData: FormData) => {
-    const dto = mapFormData<ContactDto>(fomData, ContactDtoConfig) as ContactDto;
+    const dto = parseFormData<ContactDto>(fomData, ContactDtoConfig);
     await ContactService.create(dto);
 
     revalidatePath("/dashboard/contact");

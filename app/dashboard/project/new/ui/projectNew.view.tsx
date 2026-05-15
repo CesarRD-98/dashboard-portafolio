@@ -8,8 +8,10 @@ import { InputFile } from "@/app/components/shared/forms/InputFile";
 import { Select } from "@/app/components/shared/forms/Select";
 import { Textarea } from "@/app/components/shared/forms/Textarea";
 import { useToast } from "@/app/components/toast/toast.provider";
+import { AppError } from "@/app/lib/errors/AppError";
+import { buildFormData } from "@/app/lib/forms/buildFormData";
 import { createProject } from "@/app/modules/projects/actions/projects.action";
-import { ProjectDto, requiredFieldsProject, roleOptions } from "@/app/modules/projects/projects.model";
+import { initialProjectForm, ProjectDto, requiredFieldsProject, roleOptions } from "@/app/modules/projects/projects.model";
 import { Save } from "lucide-react";
 import { FormEvent, useState } from "react";
 
@@ -17,67 +19,45 @@ export function ProjectNewView() {
     const { showToast } = useToast();
     const [loading, setLoading] = useState<boolean>(false);
 
-    const [form, setForm] = useState<ProjectDto>({
-        title: "",
-        description: "",
-        stack: "",
-        role: "",
-        link: "",
-    });
-
+    const [form, setForm] = useState<ProjectDto>(initialProjectForm);
     const [image, setImage] = useState<File | null>(null);
+
+    const isFormValid: boolean = requiredFieldsProject.every((field) => {
+        const value = form[field];
+        return typeof value === "string" && value.trim() !== "";
+    }) && (image !== null);
 
     const handleChange = (key: keyof ProjectDto, value: string) => {
         setForm((prev) => ({ ...prev, [key]: value }));
     };
 
-    const buildFormData = () => {
-        const formData = new FormData();
-
-        Object.entries(form).forEach(([key, value]) => {
-            formData.append(key, value);
-        });
-
-        if (image) {
-            formData.append("img", image);
-        }
-
-        return formData;
-    };
-
-    const isFormValid: boolean = requiredFieldsProject.every((field) => {
-        const value = form[field];
-        return typeof value === "string" ? value.trim() !== "" : value !== undefined;
-    });
-
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
-        const formData = buildFormData();
+        const formData = buildFormData<ProjectDto>({
+            current: form,
+            files: { img: image }
+        })
+
         if (!formData) return;
 
         setLoading(true);
 
         try {
-            const response = await createProject(formData);
-
-            if (!response.success) {
-                showToast({
-                    title: "Error",
-                    message: response.error.message,
-                    type: response.error.type,
-                });
-                return;
-            }
-
+            await createProject(formData);
             showToast({
-                title: "Éxito",
                 message: "Proyecto creado correctamente",
                 type: "success",
             });
 
             resetForm();
-
+        } catch (error: unknown) {
+            if (error instanceof AppError) {
+                showToast({
+                    message: error.message,
+                    type: error.type,
+                });
+            }
         } finally {
             setLoading(false);
         }
@@ -85,7 +65,7 @@ export function ProjectNewView() {
 
 
     const resetForm = () => {
-        setForm({ title: "", description: "", stack: "", role: "", link: "", });
+        setForm(initialProjectForm);
         setImage(null);
     };
 
@@ -164,7 +144,7 @@ export function ProjectNewView() {
                 </Field>
 
                 {/* ACTION */}
-                <div className="flex justify-end">
+                <div className="flex justify-start">
                     <ButtonSubmit isValid={isFormValid} loading={loading} text="Guardar proyecto" icon={<Save size={18} />} />
                 </div>
 

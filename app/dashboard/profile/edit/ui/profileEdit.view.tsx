@@ -8,8 +8,10 @@ import { InputFile } from "@/app/components/shared/forms/InputFile"
 import { Textarea } from "@/app/components/shared/forms/Textarea"
 import { useToast } from "@/app/components/toast/toast.provider"
 import { AppError } from "@/app/lib/errors/AppError"
+import { buildFormData } from "@/app/lib/forms/buildFormData"
+import { hasChanges } from "@/app/lib/forms/hasChanges"
 import { updateProfileAction } from "@/app/modules/profile/actions/profile.action"
-import { Profile, ProfileDto } from "@/app/modules/profile/profile.model"
+import { initialProfileForm, Profile, ProfileDto } from "@/app/modules/profile/profile.model"
 import { Save } from "lucide-react"
 import { FormEvent, useEffect, useState } from "react"
 
@@ -19,57 +21,36 @@ type Props = {
 
 export function ProfileEditView({ profile }: Props) {
     const { showToast } = useToast()
-    const [initialForm, setInitialForm] = useState<Partial<ProfileDto> | null>(null)
 
-    const [form, setForm] = useState<ProfileDto>({
-        author: '',
-        year: '',
-        shortBio: '',
-        tagLine: '',
-        profession: '',
-    })
+    const [initialForm, setInitialForm] = useState<Partial<ProfileDto> | null>(null)
+    const [form, setForm] = useState<ProfileDto>(initialProfileForm)
 
     const [cv, setCv] = useState<File | null>(null)
     const [avatar, setAvatar] = useState<File | null>(null)
     const [loading, setLoading] = useState<boolean>(false)
 
-    const handleChange = <Key extends keyof ProfileDto>(field: Key, value: ProfileDto[Key]) => {
+    const handleChange = (field: keyof ProfileDto, value: string) => {
         setForm(prev => ({
             ...prev,
             [field]: value
         }))
     }
 
-    const hasChanges = initialForm ? Object.keys(form).some((K) => {
-        const key = K as keyof ProfileDto
-        return (form[key] ?? '') !== (initialForm[key] ?? '')
-    }) || avatar !== null || cv !== null
-        : false
-
-    const buildFormData = () => {
-        if (!initialForm) return null
-
-        const formData = new FormData();
-
-        (Object.keys(form) as (keyof ProfileDto)[]).forEach((key) => {
-            const current = form[key] ?? ''
-            const initial = initialForm[key] ?? ''
-
-            if (current !== initial) {
-                formData.append(key, String(current))
-            }
-        })
-
-        if (avatar) formData.append('avatar', avatar)
-        if (cv) formData.append('cv', cv)
-
-        return formData
-    }
+    const formChanged = hasChanges<ProfileDto>({
+        current: form,
+        initial: initialForm ? initialForm : {},
+        files: { avatar, cv }
+    })
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
-        const formData = buildFormData();
+        const formData = buildFormData<ProfileDto>({
+            current: form,
+            initial: initialForm ? initialForm : {},
+            files: { avatar, cv }
+        })
+
         if (!formData) return;
 
         try {
@@ -77,7 +58,6 @@ export function ProfileEditView({ profile }: Props) {
             await updateProfileAction(formData);
 
             showToast({
-                title: 'Éxito',
                 message: 'Perfil actualizado correctamente',
                 type: 'success'
             });
@@ -203,7 +183,7 @@ export function ProfileEditView({ profile }: Props) {
 
                 <div className="flex justify-start">
                     <ButtonSubmit
-                        isValid={hasChanges && !loading}
+                        isValid={formChanged && !loading}
                         loading={loading}
                         text="Guardar cambios"
                         icon={<Save size={18} />}

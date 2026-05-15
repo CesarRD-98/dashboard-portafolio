@@ -1,5 +1,5 @@
 import { SelectOption } from "@/app/components/shared/forms/Select";
-import { FieldConfig } from "@/app/lib/forms/forms.mapper";
+import { FieldConfig } from "@/app/lib/forms/form.type";
 
 export interface Contact {
     id: string;
@@ -18,7 +18,7 @@ export interface ContactDto {
     category?: string;
     type?: string;
     linkUrl?: string;
-    isPrimary: boolean;
+    isPrimary?: boolean;
 }
 
 export const ContactDtoConfig: FieldConfig<ContactDto, keyof ContactDto>[] = [
@@ -32,7 +32,7 @@ export const ContactDtoConfig: FieldConfig<ContactDto, keyof ContactDto>[] = [
 
 
 export const typeContact: SelectOption[] = [
-    { text: "--- Selecciona un tipo ---", value: "" },
+    { text: "--- Selecciona tipo ---", value: "" },
     { text: "Correo electrónico", value: "email" },
     { text: "Teléfono", value: "phone" },
     { text: "LinkedIn", value: "linkedin" },
@@ -41,7 +41,7 @@ export const typeContact: SelectOption[] = [
 ]
 
 export const categoryContact: SelectOption[] = [
-    { text: "--- Selecciona una categoría ---", value: "" },
+    { text: "--- Selecciona categoría ---", value: "" },
     { text: "Contacto directo", value: "direct" },
     { text: "Red social", value: "social" },
 ]
