@@ -21,6 +21,8 @@ export interface ContactDto {
     isPrimary?: boolean;
 }
 
+export const initialContactForm: ContactDto = { title: "", value: "", category: "", type: "", linkUrl: "", isPrimary: false, };
+
 export const ContactDtoConfig: FieldConfig<ContactDto, keyof ContactDto>[] = [
     { key: 'title', type: 'string' },
     { key: 'value', type: 'string' },
