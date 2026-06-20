@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { XIcon, CheckCircle, AlertCircle, Info } from "lucide-react";
 import { useToast } from "../toast.provider";
 import { Toast } from "../toast.type";
+import clsx from "clsx";
 
 const icons = {
     success: <CheckCircle size={18} />,
@@ -12,7 +13,6 @@ const icons = {
 
 export const ToastItem = ({ toast }: { toast: Toast }) => {
     const { closeToast, pauseToast, resumeToast } = useToast();
-
     const [visible, setVisible] = useState(false);
 
     useEffect(() => {
@@ -27,22 +27,22 @@ export const ToastItem = ({ toast }: { toast: Toast }) => {
         <div
             onMouseEnter={() => pauseToast(toast.id)}
             onMouseLeave={() => resumeToast(toast.id)}
-            className={`group relative flex items-start gap-3 w-full max-w-sm px-6 py-4 rounded-md border border-neutral-200 dark:border-neutral-700 
-                bg-neutral-50 dark:bg-neutral-900/30 shadow-lg transition duration-300
-                ${toast.closing
+            className={clsx("group relative flex items-start gap-3 w-full max-w-sm px-6 py-3 rounded-md border border-neutral-300 dark:border-neutral-700",
+                "bg-white dark:bg-neutral-900 shadow-lg transition duration-300",
+                toast.closing
                     ? "opacity-0 translate-y-2 scale-95"
                     : visible
                         ? "opacity-100 translate-y-0 scale-100"
-                        : "opacity-0 -translate-y-2 scale-95"}`}
+                        : "opacity-0 -translate-y-2 scale-95")}
         >
 
             {/* ICON */}
             <div
-                className={`mt-0.5 
-                    ${toast.type === "success" && "text-green-500/75"}
-                    ${toast.type === "error" && "text-red-500/75"}
-                    ${toast.type === "info" && "text-blue-500/75"}
-                    ${toast.type === "warning" && "text-yellow-500/75"}`}
+                className={clsx("mt-0.5",
+                    toast.type === "success" && "text-green-500/75",
+                    toast.type === "error" && "text-red-500/75",
+                    toast.type === "info" && "text-blue-500/75",
+                    toast.type === "warning" && "text-yellow-500/75")}
             >
                 {icons[toast.type]}
             </div>
@@ -74,17 +74,6 @@ export const ToastItem = ({ toast }: { toast: Toast }) => {
             >
                 <XIcon size={16} />
             </button>
-
-            {/* PROGRESS */}
-            <div className="absolute bottom-0 left-0 h-[2px] w-full bg-neutral-200 dark:bg-neutral-800 overflow-hidden rounded-b-md">
-                <div
-                    className="h-full bg-blue-500 animate-toast-progress"
-                    style={{
-                        animationDuration: `${toast.duration}ms`,
-                        animationPlayState: visible ? "running" : "paused",
-                    }}
-                />
-            </div>
         </div>
     );
 };
