@@ -7,9 +7,10 @@ import { Input } from "@/app/components/shared/forms/Input";
 import { Select } from "@/app/components/shared/forms/Select";
 import { useToast } from "@/app/components/toast/toast.provider";
 import { AppError } from "@/app/lib/errors/AppError";
-import { Contact, ContactDto, initialContactForm } from "@/app/modules/contacts/contact.model";
+import { updateContact } from "@/app/modules/contacts/actions/contact.action";
+import { categoryContact, Contact, ContactDto, initialContactForm, typeContact } from "@/app/modules/contacts/contact.model";
 import { Save } from "lucide-react";
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 type Props = {
     contact: Contact
@@ -29,18 +30,45 @@ export function ContactEditView({ contact }: Props) {
         }));
     };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const hasChanges = initialForm
+        ? Object.keys(form).some(key => {
+            const k = key as keyof ContactDto;
+            return (form[k] ?? '') !== (initialForm[k] ?? '');
+        })
+        : false;
+
+    const buildFormData = () => {
+        if (!initialForm) return null;
+        const formData = new FormData();
+
+        Object.keys(form).forEach((key) => {
+            const k = key as keyof ContactDto;
+            const current = form[k] ?? '';
+            const initial = initialForm[k] ?? '';
+
+            if (current !== initial) {
+                formData.append(key, String(current));
+            }
+        });
+        return formData;
+    };
+
+
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        const formData = buildFormData();
+        if (!formData) return;
 
         try {
             setLoading(true);
-            // await ContactService.updateContact(contact.id, form);
+            await updateContact(contact.id, formData);
+
             showToast({
                 message: "Contacto actualizado correctamente",
                 type: "success",
             });
 
-            handleReset();
         } catch (error: unknown) {
             if (error instanceof AppError) {
                 showToast({
@@ -51,10 +79,6 @@ export function ContactEditView({ contact }: Props) {
         } finally {
             setLoading(false);
         }
-    };
-
-    const handleReset = () => {
-        setForm(initialContactForm);
     };
 
     useEffect(() => {
@@ -84,63 +108,87 @@ export function ContactEditView({ contact }: Props) {
                 {/* GRID */}
                 <div className="grid gap-6 md:grid-cols-2">
 
-                    <Field label="Título">
+                    <Field label="Título" htmlFor="title">
                         <Input
+                            id="title"
+                            name="title"
                             value={form.title}
                             onChange={(e) => handleChange("title", e.target.value)}
                             placeholder="Nombre del proyecto"
                         />
                     </Field>
 
-                    <Field label="Valor">
+                    <Field label="Valor" htmlFor="value">
                         <Input
+                            id="value"
+                            name="value"
                             value={form.value}
                             onChange={(e) => handleChange("value", e.target.value)}
-                            placeholder="Frontend, Backend, Fullstack..."
+                            placeholder="Ej: email@ejemplo.com, +504-3456-7890, https://linkedin.com/in/nombre, https://github.com/nombre..."
                         />
                     </Field>
 
                 </div>
 
-                {/* DESCRIPTION */}
-                <Field label="Categoría">
-                    <Input
+                {/* CATEGORY */}
+                <Field label="Categoría" htmlFor="category">
+                    <Select
+                        id="category"
+                        name="category"
                         value={form.category}
                         onChange={(e) => handleChange("category", e.target.value)}
-                        placeholder="Frontend, Backend, Fullstack..."
-                    />
+                    >
+                        {categoryContact.map(({ value, text }) => (
+                            <option key={value} value={value}>
+                                {text}
+                            </option>
+                        ))}
+                    </Select>
                 </Field>
 
-                {/* STACK */}
-                <Field label="Tipo de Contacto">
-                    <Input
+                {/* TYPE */}
+                <Field label="Tipo de Contacto" htmlFor="type">
+                    <Select
+                        id="type"
+                        name="type"
                         value={form.type}
                         onChange={(e) => handleChange("type", e.target.value)}
-                        placeholder="React, Node, PostgreSQL..."
-                    />
+                    >
+                        {typeContact.map(({ value, text }) => (
+                            <option key={value} value={value}>
+                                {text}
+                            </option>
+                        ))}
+                    </Select>
                 </Field>
 
                 {/* LINK */}
-                <Field label="Enlace">
+                <Field label="Enlace" htmlFor="linkUrl">
                     <Input
+                        id="linkUrl"
+                        name="linkUrl"
                         value={form.linkUrl}
                         onChange={(e) => handleChange("linkUrl", e.target.value)}
                         placeholder="https://..."
                     />
                 </Field>
 
-                {/* IMAGE */}
-                <Field label="Es contacto principal?">
-                    <Select>
-                        <option>Selecciona</option>
-                        <option>Si</option>
-                        <option>No</option>
+                {/* IS PRIMARY */}
+                <Field label="Es contacto principal?" htmlFor="isPrimary">
+                    <Select
+                        id="isPrimary"
+                        name="isPrimary"
+                        value={String(form.isPrimary)}
+                        onChange={(e) => handleChange("isPrimary", e.target.value === "true")}
+                    >
+                        <option value="true">Si</option>
+                        <option value="false">No</option>
                     </Select>
                 </Field>
 
                 {/* ACTIONS */}
                 <div className="flex justify-start">
-                    <ButtonSubmit isValid={true} loading={loading} text="Guardar cambios" icon={<Save size={16} />} />
+                    <ButtonSubmit isValid={hasChanges} loading={loading} text="Guardar cambios" icon={<Save size={16} />} />
                 </div>
 
             </form>

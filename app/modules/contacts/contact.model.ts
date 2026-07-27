@@ -46,6 +46,7 @@ export const categoryContact: SelectOption[] = [
     { text: "--- Selecciona categoría ---", value: "" },
     { text: "Contacto directo", value: "direct" },
     { text: "Red social", value: "social" },
+    { text: "Otro", value: "other" }
 ]
 
 export const requiredFieldsContact: (keyof ContactDto)[] = ['title', 'value', 'category', 'type'];
