@@ -28,7 +28,15 @@ export const ContactService = {
         if (error) { throw mapSupabaseError(error) }
     },
     update: async (id: string, dto: ContactDto) => {
-        return dto ? '' : null;
+        const { supabase, userId } = await getServerAuthContext();
+
+        const { ...rest } = dto;
+        const contactData: Record<string, unknown> = { ...rest };
+
+        contactData.userId = userId;
+
+        const { error } = await supabase.from('contacts').update([toSnakeCase(contactData)]).eq('id', id);
+        if (error) { throw mapSupabaseError(error) }
     },
     delete: async (id: string) => {
         const { supabase } = await getServerAuthContext();

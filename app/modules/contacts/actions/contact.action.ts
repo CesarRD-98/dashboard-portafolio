@@ -17,3 +17,9 @@ export const deleteContact = safeAction(async (id: string) => {
     await ContactService.delete(id);
     revalidatePath("/dashboard/contact");
 });
+
+export const updateContact = safeAction(async (id: string, fomData: FormData) => {
+    const dto = parseFormData<ContactDto>(fomData, ContactDtoConfig);
+    await ContactService.update(id, dto);
+    revalidatePath("/dashboard/contact");
+});
