@@ -5,6 +5,7 @@ export interface Contact {
     id: string;
     title: string;
     value: string;
+    category: string;
     type: string;
     linkUrl: string;
     isPrimary: boolean;

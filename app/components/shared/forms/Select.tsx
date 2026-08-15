@@ -1,4 +1,6 @@
-type SelectProps = React.SelectHTMLAttributes<HTMLSelectElement> & {
+import { forwardRef, SelectHTMLAttributes } from "react";
+
+type SelectProps = SelectHTMLAttributes<HTMLSelectElement> & {
     error?: boolean;
 };
 
@@ -19,13 +21,16 @@ export type SelectOption = {
     selected?: boolean
 }
 
-export const Select = ({ error, className = "", children, ...props }: SelectProps) => {
+export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select(
+    { error, className = "", children, ...props }, ref
+) {
     return (
         <select
+            ref={ref}
             className={`${baseStyles} ${error ? errorStyles : ""} pr-10 ${className}`}
             {...props}
         >
             {children}
         </select>
     );
-};
+});

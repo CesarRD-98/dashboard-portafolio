@@ -7,13 +7,13 @@ import { Input } from "@/app/components/shared/forms/Input"
 import { InputFile } from "@/app/components/shared/forms/InputFile"
 import { Textarea } from "@/app/components/shared/forms/Textarea"
 import { useToast } from "@/app/components/toast/toast.provider"
-import { AppError } from "@/app/lib/errors/AppError"
-import { buildFormData } from "@/app/lib/forms/buildFormData"
-import { hasChanges } from "@/app/lib/forms/hasChanges"
+import { toFormData } from "@/app/lib/forms/zod"
 import { updateProfileAction } from "@/app/modules/profile/actions/profile.action"
-import { initialProfileForm, Profile, ProfileDto } from "@/app/modules/profile/profile.model"
+import { Profile } from "@/app/modules/profile/profile.model"
+import { profileSchema, ProfileForm } from "@/app/modules/profile/profile.schema"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { Save } from "lucide-react"
-import { FormEvent, useEffect, useState } from "react"
+import { Controller, useForm } from "react-hook-form"
 
 type Props = {
     profile: Profile
@@ -21,77 +21,36 @@ type Props = {
 
 export function ProfileEditView({ profile }: Props) {
     const { showToast } = useToast()
+    const { register, control, handleSubmit, reset, formState: { errors, isDirty, isSubmitting } } = useForm<ProfileForm>({
+        resolver: zodResolver(profileSchema),
+        defaultValues: {
+            author: profile.author,
+            year: profile.year.toString(),
+            shortBio: profile.shortBio,
+            tagLine: profile.tagLine,
+            profession: profile.profession,
+        },
+        mode: "onChange",
+    });
 
-    const [initialForm, setInitialForm] = useState<Partial<ProfileDto> | null>(null)
-    const [form, setForm] = useState<ProfileDto>(initialProfileForm)
+    const onSubmit = async (values: ProfileForm) => {
+            const response = await updateProfileAction(toFormData(values));
 
-    const [cv, setCv] = useState<File | null>(null)
-    const [avatar, setAvatar] = useState<File | null>(null)
-    const [loading, setLoading] = useState<boolean>(false)
-
-    const handleChange = (field: keyof ProfileDto, value: string) => {
-        setForm(prev => ({
-            ...prev,
-            [field]: value
-        }))
-    }
-
-    const formChanged = hasChanges<ProfileDto>({
-        current: form,
-        initial: initialForm ? initialForm : {},
-        files: { avatar, cv }
-    })
-
-    const handleSubmit = async (e: FormEvent) => {
-        e.preventDefault();
-
-        const formData = buildFormData<ProfileDto>({
-            current: form,
-            initial: initialForm ? initialForm : {},
-            files: { avatar, cv }
-        })
-
-        if (!formData) return;
-
-        try {
-            setLoading(true);
-            await updateProfileAction(formData);
+            if (!response.success) {
+                showToast({
+                    message: response.error.message,
+                    type: response.error.type,
+                });
+                return;
+            }
 
             showToast({
                 message: 'Perfil actualizado correctamente',
                 type: 'success'
             });
 
-            setCv(null)
-            setAvatar(null)
-
-        } catch (error: unknown) {
-            if (error instanceof AppError) {
-                showToast({
-                    message: error.message,
-                    type: error.type
-                });
-            }
-
-        } finally {
-            setLoading(false);
-        }
+            reset({ ...values, avatar: undefined, cv: undefined })
     };
-
-    useEffect(() => {
-        if (profile) {
-            const mapped: ProfileDto = {
-                author: profile.author ?? '',
-                year: profile.year?.toString() ?? '',
-                shortBio: profile.shortBio ?? '',
-                tagLine: profile.tagLine ?? '',
-                profession: profile.profession ?? ''
-            }
-
-            setForm(mapped)
-            setInitialForm(mapped)
-        }
-    }, [profile])
 
     return (
         <Section
@@ -102,28 +61,28 @@ export function ProfileEditView({ profile }: Props) {
 
             {/* FORM CARD */}
             <form
-                onSubmit={handleSubmit}
+                onSubmit={handleSubmit(onSubmit)}
                 className="p-6 rounded-md border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900/30 flex flex-col gap-8"
             >
 
                 {/* GRID */}
                 <div className="grid gap-6 md:grid-cols-3">
 
-                    <Field label="Autor">
+                    <Field label="Autor" error={errors.author?.message}>
                         <Input
-                            value={form.author}
-                            onChange={(e) => handleChange("author", e.target.value)}
+                            {...register("author")}
+                            error={!!errors.author}
                             placeholder="Tu nombre o alias"
                         />
                     </Field>
 
-                    <Field label="Año">
+                    <Field label="Año" error={errors.year?.message}>
                         <Input
                             inputMode="numeric"
                             pattern="[0-9]{4}"
                             maxLength={4}
-                            value={form.year}
-                            onChange={(e) => handleChange("year", e.target.value)}
+                            {...register("year")}
+                            error={!!errors.year}
                             placeholder="2026"
                         />
                     </Field>
@@ -133,27 +92,27 @@ export function ProfileEditView({ profile }: Props) {
                 {/* TEXTAREAS */}
                 <div className="flex flex-col gap-6">
 
-                    <Field label="Biografía corta">
+                    <Field label="Biografía corta" error={errors.shortBio?.message}>
                         <Textarea
                             rows={4}
-                            value={form.shortBio}
-                            onChange={(e) => handleChange("shortBio", e.target.value)}
+                            {...register("shortBio")}
+                            error={!!errors.shortBio}
                             placeholder="Resumen breve sobre ti"
                         />
                     </Field>
 
-                    <Field label="Profesión">
+                    <Field label="Profesión" error={errors.profession?.message}>
                         <Input
-                            value={form.profession}
-                            onChange={(e) => handleChange("profession", e.target.value)}
+                            {...register("profession")}
+                            error={!!errors.profession}
                             placeholder="Desarrollador web"
                         />
                     </Field>
 
-                    <Field label="Línea de etiqueta">
+                    <Field label="Línea de etiqueta" error={errors.tagLine?.message}>
                         <Input
-                            value={form.tagLine}
-                            onChange={(e) => handleChange("tagLine", e.target.value)}
+                            {...register("tagLine")}
+                            error={!!errors.tagLine}
                             placeholder="¿Qué estás aprendiendo actualmente?"
                         />
                     </Field>
@@ -162,29 +121,41 @@ export function ProfileEditView({ profile }: Props) {
 
                 {/* FILES */}
                 <div className="grid gap-6 md:grid-cols-3">
-                    <Field label="Avatar o Imagen de perfil">
-                        <InputFile
-                            helperText="JPG, PNG o GIF"
-                            accept=".jpg,.jpeg,.png,.gif"
-                            file={avatar}
-                            onChange={setAvatar}
+                    <Field label="Avatar o Imagen de perfil" error={errors.avatar?.message}>
+                        <Controller
+                            control={control}
+                            name="avatar"
+                            render={({ field }) => (
+                                <InputFile
+                                    helperText="JPG o PNG, hasta 5 MB"
+                                    accept=".jpg,.jpeg,.png"
+                                    file={field.value ?? null}
+                                    onChange={field.onChange}
+                                />
+                            )}
                         />
                     </Field>
 
-                    <Field label="CV">
-                        <InputFile
-                            helperText="PDF o DOCX"
-                            accept=".pdf,.doc,.docx"
-                            file={cv}
-                            onChange={setCv}
+                    <Field label="CV" error={errors.cv?.message}>
+                        <Controller
+                            control={control}
+                            name="cv"
+                            render={({ field }) => (
+                                <InputFile
+                                    helperText="PDF, hasta 5 MB"
+                                    accept=".pdf"
+                                    file={field.value ?? null}
+                                    onChange={field.onChange}
+                                />
+                            )}
                         />
                     </Field>
                 </div>
 
                 <div className="flex justify-start">
                     <ButtonSubmit
-                        isValid={formChanged && !loading}
-                        loading={loading}
+                        isValid={isDirty}
+                        loading={isSubmitting}
                         text="Guardar cambios"
                         icon={<Save size={18} />}
                     />
