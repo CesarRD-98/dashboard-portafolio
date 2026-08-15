@@ -8,7 +8,6 @@ import { ContactCard } from "./components/ContactCard";
 import { useConfirm } from "@/app/components/shared/modals/confirm.provider";
 import { deleteContact } from "@/app/modules/contacts/actions/contact.action";
 import { useToast } from "@/app/components/toast/toast.provider";
-import { AppError } from "@/app/lib/errors/AppError";
 import { ButtonLink } from "@/app/components/shared/ButtonLink";
 
 type Props = {
@@ -26,21 +25,20 @@ export function ContactView({ contacts }: Props) {
             confirmText: "Eliminar",
             variant: "danger",
             action: async () => {
-                try {
-                    await deleteContact(contact.id)
-                    showToast({
-                        message: "Se eliminó correctamente",
-                        type: "success"
-                    })
+                const response = await deleteContact(contact.id)
 
-                } catch (error: unknown) {
-                    if (error instanceof AppError) {
-                        showToast({
-                            message: error.message,
-                            type: "error"
-                        })
-                    }
+                if (!response.success) {
+                    showToast({
+                        message: response.error.message,
+                        type: response.error.type,
+                    })
+                    return
                 }
+
+                showToast({
+                    message: "Se eliminó correctamente",
+                    type: "success"
+                })
             }
         })
     }
