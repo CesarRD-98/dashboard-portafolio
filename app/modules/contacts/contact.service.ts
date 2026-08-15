@@ -5,8 +5,15 @@ import { mapSupabaseError } from "@/app/lib/errors/ErrorMapper";
 
 export const ContactService = {
     getOne: async (id: string): Promise<Contact> => {
-        const { supabase } = await getServerAuthContext();
-        const { data } = await supabase.from('contacts').select('*').eq('id', id).single();
+        const { userId, supabase } = await getServerAuthContext();
+        const { data, error } = await supabase
+            .from('contacts')
+            .select('*')
+            .eq('id', id)
+            .eq('user_id', userId)
+            .single();
+
+        if (error) { throw mapSupabaseError(error) }
 
         return toCamelCase(data) as Contact;
     },
@@ -35,12 +42,20 @@ export const ContactService = {
 
         contactData.userId = userId;
 
-        const { error } = await supabase.from('contacts').update([toSnakeCase(contactData)]).eq('id', id);
+        const { error } = await supabase
+            .from('contacts')
+            .update([toSnakeCase(contactData)])
+            .eq('id', id)
+            .eq('user_id', userId);
         if (error) { throw mapSupabaseError(error) }
     },
     delete: async (id: string) => {
-        const { supabase } = await getServerAuthContext();
-        const { error } = await supabase.from('contacts').delete().eq('id', id);
+        const { userId, supabase } = await getServerAuthContext();
+        const { error } = await supabase
+            .from('contacts')
+            .delete()
+            .eq('id', id)
+            .eq('user_id', userId);
         if (error) { throw mapSupabaseError(error) }
     },
 }

@@ -3,7 +3,7 @@ import { FieldConfig } from "@/app/lib/forms/form.type";
 
 export interface Project {
     id: string
-    userId: number
+    userId: string
     title: string
     description: string
     imgUrl: string
