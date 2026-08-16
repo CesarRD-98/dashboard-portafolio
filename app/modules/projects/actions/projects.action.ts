@@ -1,23 +1,13 @@
 'use server'
 
-import { parseFormData } from "@/app/lib/forms/formData.parser"
-import { ProjectDto, projectDtoConfig } from "../projects.model"
 import { revalidatePath } from "next/cache"
 import { safeAction } from "@/app/lib/errors/SafeActions"
-import { AppError } from "@/app/lib/errors/AppError"
 import { ProjectsService } from "../projects.service"
+import { formDataToObject, parseWithSchema } from "@/app/lib/forms/zod"
+import { projectCreateSchema, projectUpdateSchema } from "../projects.schema"
 
 export const createProject = safeAction(async (formData: FormData) => {
-
-  const dto = parseFormData<ProjectDto>(formData, projectDtoConfig);
-  const { img, stack, ...rest } = dto
-
-  const hasData = Object.keys(rest).length > 0 || !!img || (stack && stack.trim() !== '')
-
-  if (!hasData) {
-    throw new AppError('info', 'No se encontraron datos para crear un proyecto')
-  }
-
+  const dto = parseWithSchema(projectCreateSchema, formDataToObject(formData));
   await ProjectsService.create(dto)
 
   revalidatePath('/dashboard/project')
@@ -30,7 +20,7 @@ export const deleteProject = safeAction(async (id: string) => {
 })
 
 export const updateProject = safeAction(async (id: string, formData: FormData) => {
-  const dto = parseFormData<ProjectDto>(formData, projectDtoConfig);
+  const dto = parseWithSchema(projectUpdateSchema, formDataToObject(formData));
   await ProjectsService.update(id, dto)
   revalidatePath('/dashboard/project')
 })

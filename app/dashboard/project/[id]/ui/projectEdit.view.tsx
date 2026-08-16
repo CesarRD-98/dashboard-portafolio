@@ -5,12 +5,16 @@ import { ButtonSubmit } from "@/app/components/shared/forms/ButtonSubmit"
 import { Field } from "@/app/components/shared/forms/Field"
 import { Input } from "@/app/components/shared/forms/Input"
 import { InputFile } from "@/app/components/shared/forms/InputFile"
+import { Select } from "@/app/components/shared/forms/Select"
 import { Textarea } from "@/app/components/shared/forms/Textarea"
 import { useToast } from "@/app/components/toast/toast.provider"
+import { toFormData } from "@/app/lib/forms/zod"
 import { updateProject } from "@/app/modules/projects/actions/projects.action"
-import { Project, ProjectDto } from "@/app/modules/projects/projects.model"
+import { Project, roleOptions } from "@/app/modules/projects/projects.model"
+import { projectUpdateSchema, ProjectUpdateForm } from "@/app/modules/projects/projects.schema"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { Save } from "lucide-react"
-import { FormEvent, useEffect, useState } from "react"
+import { Controller, useForm } from "react-hook-form"
 
 type Props = {
     project: Project
@@ -18,65 +22,20 @@ type Props = {
 
 export function ProjectEditView({ project }: Props) {
     const { showToast } = useToast()
+    const { register, control, handleSubmit, formState: { errors, isDirty, isSubmitting } } = useForm<ProjectUpdateForm>({
+        resolver: zodResolver(projectUpdateSchema),
+        defaultValues: {
+            title: project.title,
+            description: project.description,
+            role: project.role as ProjectUpdateForm["role"],
+            stack: project.stack.join(", "),
+            link: project.link ?? "",
+        },
+        mode: "onChange",
+    });
 
-    const [initialForm, setInitialForm] = useState<Partial<ProjectDto> | null>(null)
-
-    const [form, setForm] = useState<Partial<ProjectDto>>({
-        title: '',
-        description: '',
-        role: '',
-        stack: '',
-        link: ''
-    })
-
-    const [image, setImage] = useState<File | null>(null)
-    const [loading, setLoading] = useState(false)
-
-    const handleChange = <K extends keyof ProjectDto>(field: K, value: ProjectDto[K]) => {
-        setForm(prev => ({
-            ...prev,
-            [field]: value
-        }))
-    }
-
-
-    const hasChanges = initialForm
-        ? Object.keys(form).some(key => {
-            const k = key as keyof ProjectDto
-            return (form[k] ?? '') !== (initialForm[k] ?? '')
-        }) || image !== null
-        : false
-
-
-    const buildFormData = () => {
-        if (!initialForm) return null
-
-        const formData = new FormData();
-
-        (Object.keys(form) as (keyof ProjectDto)[]).forEach((key) => {
-            const current = form[key] ?? ''
-            const initial = initialForm[key] ?? ''
-
-            if (current !== initial) {
-                formData.append(key, current)
-            }
-        })
-
-        if (image) formData.append('img', image)
-
-        return formData
-    }
-
-    const handleSubmit = async (e: FormEvent) => {
-        e.preventDefault()
-
-        const formData = buildFormData()
-        if (!formData) return
-
-        try {
-            setLoading(true)
-
-            const response = await updateProject(project.id, formData)
+    const onSubmit = async (values: ProjectUpdateForm) => {
+            const response = await updateProject(project.id, toFormData(values))
 
             if (!response.success) {
                 showToast({
@@ -92,26 +51,7 @@ export function ProjectEditView({ project }: Props) {
                 message: "Proyecto actualizado correctamente",
                 type: "success",
             });
-
-        } finally {
-            setLoading(false)
-        }
     }
-
-    useEffect(() => {
-        if (!project) return
-
-        const mapped: Partial<ProjectDto> = {
-            title: project.title ?? '',
-            description: project.description ?? '',
-            role: project.role ?? '',
-            stack: project.stack.join(', ') ?? '',
-            link: project.link ?? ''
-        }
-
-        setForm(mapped)
-        setInitialForm(mapped)
-    }, [project])
 
     return (
         <Section
@@ -122,7 +62,7 @@ export function ProjectEditView({ project }: Props) {
 
             {/* FORM */}
             <form
-                onSubmit={handleSubmit}
+                onSubmit={handleSubmit(onSubmit)}
                 className="p-6 rounded-md border border-neutral-300 dark:border-neutral-700 
                 bg-white dark:bg-neutral-900/30 flex flex-col gap-8"
             >
@@ -130,65 +70,71 @@ export function ProjectEditView({ project }: Props) {
                 {/* GRID */}
                 <div className="grid gap-6 md:grid-cols-2">
 
-                    <Field label="Título">
+                    <Field label="Título" error={errors.title?.message}>
                         <Input
-                            value={form.title}
-                            onChange={(e) => handleChange("title", e.target.value)}
+                            {...register("title")}
+                            error={!!errors.title}
                             placeholder="Nombre del proyecto"
                         />
                     </Field>
 
-                    <Field label="Rol">
-                        <Input
-                            value={form.role}
-                            onChange={(e) => handleChange("role", e.target.value)}
-                            placeholder="Frontend, Backend, Fullstack..."
-                        />
+                    <Field label="Rol" error={errors.role?.message}>
+                        <Select {...register("role")} error={!!errors.role}>
+                            {roleOptions.map((option) => (
+                                <option key={option.value} value={option.value}>{option.text}</option>
+                            ))}
+                        </Select>
                     </Field>
 
                 </div>
 
                 {/* DESCRIPTION */}
-                <Field label="Descripción">
+                <Field label="Descripción" error={errors.description?.message}>
                     <Textarea
                         rows={4}
-                        value={form.description}
-                        onChange={(e) => handleChange("description", e.target.value)}
+                        {...register("description")}
+                        error={!!errors.description}
                         placeholder="Describe el proyecto, funcionalidades, etc."
                     />
                 </Field>
 
                 {/* STACK */}
-                <Field label="Tecnologías">
+                <Field label="Tecnologías" error={errors.stack?.message}>
                     <Input
-                        value={form.stack}
-                        onChange={(e) => handleChange("stack", e.target.value)}
+                        {...register("stack")}
+                        error={!!errors.stack}
                         placeholder="React, Node, PostgreSQL..."
                     />
                 </Field>
 
                 {/* LINK */}
-                <Field label="Enlace">
+                <Field label="Enlace" error={errors.link?.message}>
                     <Input
-                        value={form.link}
-                        onChange={(e) => handleChange("link", e.target.value)}
+                        {...register("link")}
+                        error={!!errors.link}
                         placeholder="https://..."
                     />
                 </Field>
 
                 {/* IMAGE */}
-                <Field label="Imagen de proyecto">
-                    <InputFile
-                        helperText="JPG o PNG"
-                        accept=".jpg,.jpeg,.png"
-                        file={image}
-                        onChange={setImage}
+                <Field label="Imagen de proyecto" error={errors.img?.message}>
+                    <Controller
+                        control={control}
+                        name="img"
+                        render={({ field }) => (
+                            <InputFile
+                                helperText="JPG o PNG, hasta 5 MB"
+                                accept=".jpg,.jpeg,.png"
+                                file={field.value ?? null}
+                                onChange={field.onChange}
+                            />
+                        )}
                     />
                 </Field>
 
                 {/* ACTIONS */}
                 <div className="flex justify-start">
-                    <ButtonSubmit isValid={hasChanges} loading={loading} text="Guardar cambios" icon={<Save size={16} />} />
+                    <ButtonSubmit isValid={isDirty} loading={isSubmitting} text="Guardar cambios" icon={<Save size={16} />} />
                 </div>
 
             </form>

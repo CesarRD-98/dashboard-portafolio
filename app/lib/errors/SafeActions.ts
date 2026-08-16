@@ -1,7 +1,7 @@
 import { AppError } from "@/app/lib/errors/AppError"
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 
-type ActionResponse<T = null> =
+export type ActionResponse<T = null> =
     | { success: true; data?: T }
     | {
         success: false;

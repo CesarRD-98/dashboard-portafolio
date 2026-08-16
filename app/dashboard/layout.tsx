@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { DashboardShell } from "./ui/dashboard.layout";
 import { ProfileService } from "../modules/profile/profile.service";
 import { getSupabaseServerReadonly } from "../lib/supabase/server";
-import { SessionRefresh } from "../components/auth/SessionRefresh";
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
     const supabase = await getSupabaseServerReadonly();
@@ -14,7 +13,6 @@ export default async function DashboardLayout({ children }: { children: ReactNod
 
     return (
         <DashboardShell profile={profile}>
-            <SessionRefresh />
             {children}
         </DashboardShell>
     )

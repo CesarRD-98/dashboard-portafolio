@@ -1,4 +1,6 @@
-type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
+import { forwardRef, TextareaHTMLAttributes } from "react";
+
+type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
     error?: boolean;
 };
 
@@ -12,11 +14,14 @@ const baseStyles =
 const errorStyles =
     "border-red-500 focus:border-red-500";
 
-export const Textarea = ({ error, className = "", ...props }: TextareaProps) => {
+export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textarea(
+    { error, className = "", ...props }, ref
+) {
     return (
         <textarea
+            ref={ref}
             className={`${baseStyles} ${error ? errorStyles : ""} ${className}`}
             {...props}
         />
     );
-};
+});

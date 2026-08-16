@@ -1,4 +1,4 @@
-import { InputHTMLAttributes } from "react";
+import { forwardRef, InputHTMLAttributes } from "react";
 
 type InputProps = InputHTMLAttributes<HTMLInputElement> & {
     id?: string;
@@ -13,13 +13,16 @@ const baseStyles =
 
 const errorStyles = "border-red-500 focus:border-red-500";
 
-export const Input = ({ id = "", error, className = "", ...props }: InputProps) => {
+export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
+    { id = "", error, className = "", ...props }, ref
+) {
     return (
         <input
+            ref={ref}
             id={id}
             name={id}
             className={`${baseStyles} ${error ? errorStyles : ""} ${className}`}
             {...props}
         />
     );
-};
+});

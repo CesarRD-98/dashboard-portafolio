@@ -27,22 +27,22 @@ export function ProjectView({ projects }: Props) {
             confirmText: "Eliminar",
             variant: "danger",
             action: async () => {
-                try {
-                    await deleteProject(project.id)
+                const response = await deleteProject(project.id)
 
-                    showToast({
-                        title: "Proyecto eliminado",
-                        message: "Se eliminó correctamente",
-                        type: "success"
-                    })
-
-                } catch {
+                if (!response.success) {
                     showToast({
                         title: "Error",
-                        message: "No se pudo eliminar",
-                        type: "error"
+                        message: response.error.message,
+                        type: response.error.type,
                     })
+                    return
                 }
+
+                showToast({
+                    title: "Proyecto eliminado",
+                    message: "Se eliminó correctamente",
+                    type: "success"
+                })
             }
         })
     }

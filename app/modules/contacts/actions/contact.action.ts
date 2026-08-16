@@ -2,12 +2,12 @@
 
 import { safeAction } from "@/app/lib/errors/SafeActions";
 import { ContactService } from "../contact.service";
-import { ContactDto, ContactDtoConfig } from "../contact.model";
-import { parseFormData } from "@/app/lib/forms/formData.parser";
 import { revalidatePath } from "next/cache";
+import { contactFormDataSchema } from "../contact.schema";
+import { formDataToObject, parseWithSchema } from "@/app/lib/forms/zod";
 
-export const createContact = safeAction(async (fomData: FormData) => {
-    const dto = parseFormData<ContactDto>(fomData, ContactDtoConfig);
+export const createContact = safeAction(async (formData: FormData) => {
+    const dto = parseWithSchema(contactFormDataSchema, formDataToObject(formData));
     await ContactService.create(dto);
 
     revalidatePath("/dashboard/contact");
@@ -18,8 +18,8 @@ export const deleteContact = safeAction(async (id: string) => {
     revalidatePath("/dashboard/contact");
 });
 
-export const updateContact = safeAction(async (id: string, fomData: FormData) => {
-    const dto = parseFormData<ContactDto>(fomData, ContactDtoConfig);
+export const updateContact = safeAction(async (id: string, formData: FormData) => {
+    const dto = parseWithSchema(contactFormDataSchema, formDataToObject(formData));
     await ContactService.update(id, dto);
     revalidatePath("/dashboard/contact");
 });
