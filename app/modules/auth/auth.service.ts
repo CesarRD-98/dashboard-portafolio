@@ -1,6 +1,16 @@
 import { AppError } from "@/app/lib/errors/AppError";
 import { LoginDto } from "./auth.model";
-import { mapSupabaseError } from "@/app/lib/errors/ErrorMapper";
+
+async function getResponseError(response: Response): Promise<AppError> {
+    const body: unknown = await response.json().catch(() => null);
+    const message = typeof body === "object" && body !== null && "error" in body
+        && typeof body.error === "object" && body.error !== null && "message" in body.error
+        && typeof body.error.message === "string"
+        ? body.error.message
+        : "Ocurrió un error inesperado. Inténtalo de nuevo.";
+
+    return new AppError("error", message);
+}
 
 export const AuthService = {
     login: async (payload: LoginDto): Promise<void> => {
@@ -14,8 +24,7 @@ export const AuthService = {
         });
 
         if (!response.ok) {
-            const result = await response.json();
-            throw mapSupabaseError(result.error);
+            throw await getResponseError(response);
         }
     },
 
@@ -28,20 +37,7 @@ export const AuthService = {
         });
 
         if (!response.ok) {
-            const error = await response.json();
-            throw mapSupabaseError(error);
-        }
-    },
-    refresh: async (): Promise<void> => {
-        const response = await fetch('/api/auth/refresh', {
-            method: 'POST',
-            credentials: 'include'
-        });
-        
-        const { session } = await response.json();
-
-        if (!session) {
-            throw new AppError('warning', 'Sesión expirada');
+            throw await getResponseError(response);
         }
     }
 }

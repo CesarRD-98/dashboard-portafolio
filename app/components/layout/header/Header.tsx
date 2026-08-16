@@ -7,6 +7,8 @@ import { LogOut, Menu } from "lucide-react";
 import { useSidebar } from "@/app/components/sidebar/sidebar.provider";
 import { Breadcrumbs } from "../../ui/Breadcrumbs";
 import { AuthService } from "@/app/modules/auth/auth.service";
+import { AppError } from "@/app/lib/errors/AppError";
+import { useToast } from "@/app/components/toast/toast.provider";
 
 type Props = {
     profile: Profile;
@@ -15,10 +17,19 @@ type Props = {
 export function Header({ profile }: Props) {
     const router = useRouter();
     const { toggleOpen, isDesktop } = useSidebar();
+    const { showToast } = useToast();
 
     const handlerLogOut = async () => {
-        await AuthService.logout();
-        router.refresh();
+        try {
+            await AuthService.logout();
+            router.replace("/");
+        } catch (error) {
+            showToast({
+                title: "No se pudo cerrar sesión",
+                message: error instanceof AppError ? error.message : "Inténtalo de nuevo.",
+                type: "error",
+            });
+        }
     };
 
     return (

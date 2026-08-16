@@ -6,40 +6,30 @@ import { Input } from "@/app/components/shared/forms/Input"
 import { ShowPassword } from "@/app/components/shared/forms/ShowPassword"
 import { useToast } from "@/app/components/toast/toast.provider"
 import { AppError } from "@/app/lib/errors/AppError"
-import { LoginDto } from "@/app/modules/auth/auth.model"
 import { AuthService } from "@/app/modules/auth/auth.service"
-import { isEmail } from "@/app/utils/isEmail"
+import { loginSchema, LoginDto } from "@/app/modules/auth/auth.schema"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
-import { FormEvent, useState } from "react"
+import { useState } from "react"
 import { FaRightToBracket } from "react-icons/fa6"
+import { useForm } from "react-hook-form"
 
 export function LoginView() {
     const { showToast } = useToast()
     const router = useRouter();
 
-    const [form, setForm] = useState<LoginDto>({
-        email: '',
-        password: ''
-    })
-
-    const [loading, setLoading] = useState<boolean>(false)
     const [showPassword, setShowPassword] = useState<boolean>(false)
+    const { register, handleSubmit, reset, formState: { errors, isSubmitting, isValid } } = useForm<LoginDto>({
+        resolver: zodResolver(loginSchema),
+        defaultValues: { email: "", password: "" },
+        mode: "onChange",
+    });
 
-    const isValid = form.email.trim() !== '' && form.password.trim() !== '' && isEmail(form.email)
-
-    const handleChange = (key: keyof LoginDto, value: string) => {
-        setForm(prev => ({ ...prev, [key]: value }))
-    }
-
-    const handleSubmit = async (e: FormEvent) => {
-        e.preventDefault()
-        if (!isValid) return
-
+    const onSubmit = async (values: LoginDto) => {
         try {
-            setLoading(true)
-            await AuthService.login(form)
+            await AuthService.login(values)
 
-            setForm({ email: '', password: '' })
+            reset()
             router.push('/dashboard')
 
         } catch (error: unknown) {
@@ -50,8 +40,6 @@ export function LoginView() {
                     message: error.message
                 })
             }
-        } finally {
-            setLoading(false)
         }
     }
 
@@ -75,29 +63,27 @@ export function LoginView() {
                 </div>
 
                 {/* FORM */}
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
 
                     {/* EMAIL */}
-                    <Field label="Correo electrónico">
+                    <Field label="Correo electrónico" htmlFor="email" error={errors.email?.message}>
                         <Input
                             id="email"
-                            type="email" value={form.email}
-                            onChange={(e) => handleChange('email', e.target.value)}
+                            type="email"
+                            autoComplete="email"
+                            {...register("email")}
+                            error={!!errors.email}
                         />
                     </Field>
 
-                    {/* ERROR */}
-                    {!isEmail(form.email) && form.email.trim() !== '' && (
-                        <p className="text-xs text-red-500/90">Formato de correo no válido</p>
-                    )}
-
                     {/* PASSWORD */}
-                    <Field label="Contraseña">
+                    <Field label="Contraseña" htmlFor="password" error={errors.password?.message}>
                         <Input
                             id="password"
                             type={showPassword ? "text" : "password"}
-                            value={form.password}
-                            onChange={(e) => handleChange('password', e.target.value)}
+                            autoComplete="current-password"
+                            {...register("password")}
+                            error={!!errors.password}
                         />
                         <ShowPassword showPassword={showPassword} handleToggle={setShowPassword} />
                     </Field>
@@ -105,7 +91,7 @@ export function LoginView() {
                     {/* BUTTON */}
                     <ButtonSubmit
                         isValid={isValid}
-                        loading={loading}
+                        loading={isSubmitting}
                         text="Verificar"
                         icon={<FaRightToBracket />}
                     />
